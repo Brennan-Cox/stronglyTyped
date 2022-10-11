@@ -1,0 +1,7 @@
+Evan Billingsley
+Senior in Computer Science, CS concentration
+
+Sprint 1 Role: Manager
+
+Tasks:
+Initial file structure update
