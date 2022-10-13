@@ -39,7 +39,8 @@ Sprint 3: Content, Presentation, Testing
 **Local deployment**
 
 Next.js must be installed, execute the following command from the project's root directory:
-```npm run dev
+```
+npm run dev
 ```
 Then, in any web browser, navigate to localhost:3000 to view the page.
 
