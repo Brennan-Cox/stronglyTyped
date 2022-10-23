@@ -65,6 +65,7 @@ const Login: NextPage = () => {
                         <h4 className="login-text text-white">Log In</h4>
                     </div>
                     <ErrorMessage/>
+
                     {/* The action attribute will depend on how this page interacts with the database */}
                     <form onSubmit={(e) => { handleLogin(e)}}>
                         <h1 className="ml-6 mt-3 mb-2 text-white">Username</h1>
@@ -74,7 +75,7 @@ const Login: NextPage = () => {
                         <div className="flex justify-between py-7">
                         <div>
                             <Link href="/createAccount">
-                                <button className="text-mint font-semibold ml-6 mt-1 hover:bg-stgray-100" >Create an account</button>
+                                <button className="text-mint font-semibold ml-6 mt-1 hover:bg-stgray-100">Create an account</button>
                             </Link>
                         </div>
                         <div>

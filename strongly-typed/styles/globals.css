@@ -7,3 +7,11 @@
 .login-text {
     @apply font-body font-semibold text-3xl;
 }
+
+.active-tab {
+    @apply px-12 py-2 text-xl text-white bg-stgray-100 border-b-4 border-white;
+}
+
+.inactive-tab {
+    @apply px-12 py-2 text-xl text-white hover:text-mint active:text-white;
+}
