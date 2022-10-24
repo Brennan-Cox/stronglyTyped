@@ -75,7 +75,7 @@ const Login: NextPage = () => {
                         <div className="flex justify-between py-7">
                         <div>
                             <Link href="/createAccount">
-                                <button className="text-mint font-semibold ml-6 mt-1 hover:bg-stgray-100">Create an account</button>
+                                <a className="text-mint font-semibold ml-6 mt-1 hover:bg-stgray-100">Create an account</a>
                             </Link>
                         </div>
                         <div>

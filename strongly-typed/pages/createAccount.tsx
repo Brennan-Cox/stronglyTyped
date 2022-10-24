@@ -88,11 +88,11 @@ const CreateAccount: NextPage = () => {
                         <div className="flex justify-between py-7">
                         <div>
                             <Link href="/">
-                                <button className="text-mint font-semibold ml-6 mt-1 hover:bg-stgray-100" >Return to Login Page</button>
+                                <a className="text-mint font-semibold ml-6 mt-1 hover:bg-stgray-100" >Return to Login Page</a>
                             </Link>
                         </div>
                         <div>
-                            <button className="text-mint text-center py-1 font-semibold border-2 border-mint hover:bg-stgray-100 w-40 mr-10">Create Account</button>
+                            <button type="submit" className="text-mint text-center py-1 font-semibold border-2 border-mint hover:bg-stgray-100 w-40 mr-10">Create Account</button>
                         </div>
                     </div>
                     </form>

@@ -1,25 +1,28 @@
 import type { NextPage, NextPageContext, GetServerSideProps } from 'next'
 import React, { useState } from "react";
 import Link from 'next/link';
+import { getSession } from 'next-auth/react';
+import { Session } from 'next-auth';
+import { signOut } from "next-auth/react";
+import dynamic from 'next/dynamic' //dynamic imports and components directory allow for inserting whole pages with functionality
+const StandardTab = dynamic(() => import('../components/standardTab')) //inside the html.  See line 82 and standardTab.tsx at shown path.
 
 const Main: NextPage = () => {
 
     /**
      * A React hook, "hooks" into a React feature. Let's us define a variable and a function to manipulate/interact with that variable.
      * Documentation: https://reactjs.org/docs/hooks-state.html
+     * 
+     * Below hooks and method used for updating the styling of a selected tab, and displaying the correct content for each tab
      */
-    const [showMe, setShowMe] = useState(false);
     const [syntax, setActiveSyntax] = useState(false);
     const [standard, setActiveStandard] = useState(true);
     const [tutorials, setActiveTutorials] = useState(false);
 
     /**
-     * Used for the user account dropdown menu. Inverts value of showMe variable for the element menu-items 
+     * Updates hooks to display selected tab's content, and update styling of selected tab.
+     * @param tab - tab to be activated
      */
-    function toggle() {
-        setShowMe(!showMe);
-    }
-
     function toggleActiveTab(tab: String) {
         switch (tab) {
             case "standard":
@@ -40,7 +43,30 @@ const Main: NextPage = () => {
         }
     }
 
-    // Anything wrapped in a return statement is HTML
+    /**
+     * Used for the user account dropdown menu. Inverts value of showMe variable for the element menu-items 
+     */
+    const [userDropdown, setUserDropdown] = useState(false);
+    function toggle() {
+        setUserDropdown(!userDropdown);
+    }
+
+    /**
+    *  Create hook for userName variable used in page navigation bar
+    *  extracts username from session variable and update hook
+    */
+    const [userName, setUserName] = useState('');
+    async function getUsername() {
+        const session = await getSession()
+        if (session) {
+            setUserName(session?.user.username);
+        }
+    }
+    getUsername(); //Call function to update username value for page
+    
+
+
+    // Anything wrapped in this return statement is HTML
     return (
         <main>
             <div className="flex bg-stgray-200 justify-between items-end">
@@ -52,38 +78,60 @@ const Main: NextPage = () => {
 
                 {/* Navigation bar options */}
                 <div id="navigation-bar" className="px-4">
-                    <ul className="flex nav nav-tabs">
-                        <li id="standard-tab" onClick={() => toggleActiveTab("standard")} className={standard ? "active-tab" : "inactive-tab"}><a aria-controls="standard">Standard</a></li>
-                        <li id="syntax-tab" onClick={() => toggleActiveTab("syntax")} className={syntax ? "active-tab" : "inactive-tab"}>Syntax</li>
-                        <li id="tutorials-tab" onClick={() => toggleActiveTab("tutorial")} className={tutorials ? "active-tab" : "inactive-tab"}>Tutorial</li>
+                    <ul className="flex">
+                        <li id="standard-tab" onClick={() => toggleActiveTab("standard")} className={standard ? "active-tab" : "inactive-tab"}><button>Standard</button></li>
+                        <li id="syntax-tab" onClick={() => toggleActiveTab("syntax")} className={syntax ? "active-tab" : "inactive-tab"}><button>Syntax</button></li>
+                        <li id="tutorials-tab" onClick={() => toggleActiveTab("tutorial")} className={tutorials ? "active-tab" : "inactive-tab"}><button>Tutorial</button></li>
                     </ul>
                 </div>
 
                 {/* Account options dropdown menu */}
                 <div id="account-dropdown" className="py-4 mr-4">
 
-                    <a onClick={toggle} className="text-mint text-xl">Username</a>
+                    <button id="username" onClick={toggle} className="hover:text-mint text-white text-2xl pr-12">{userName}</button>
 
                     {/* Sets the value of the style attribute to either "block" or "none" */}
-                    <ul id="menu-items" style={{ display: showMe ? "block" : "none" }} className="font-semibold mt-1 absolute bg-stgray-200 border-2 py-1 px-2 border-mint">
-                        <Link href="/account-options"><li className="hover:text-mint text-white"><a>Account options</a></li></Link>
-                        <Link href="/"><li className="hover:text-mint text-white"><a href="">Log out</a></li></Link>
+                    <ul id="menu-items" style={{ display: userDropdown ? "block" : "none" }} className="font-semibold mt-1 absolute bg-stgray-200 border-2 py-2 px-2 border-mint">
+                        <Link href="/account-options"><li className="hover:text-mint text-white py-1"><button>Account Options</button></li></Link>
+                        <li onClick={() => signOut()} className="hover:text-mint text-white py-1"><button>Log Out</button></li>
                     </ul>
                 </div>
             </div>
-            <div id="main-tabs" className="bg-stgray-100 h-screen tab-content">
-                <div id="standard" className="text-white tab-pane">
-                    Contents of the standard tab
+            <div id="main-tabs" className="bg-stgray-100 h-screen text-center">
+                <div id="standard" className={standard ? "block" : "hidden"}>
+                    <StandardTab/> {/* used as example for dynamic imports */}
                 </div>
-                <div id="syntax" className="text-white tab-pane">
-                    Contents of the syntax tab
+                <div id="syntax" className={syntax ? "block" : "hidden"}>
+                    <a className= "font-body font-semibold text-3xl">Contents of the syntax tab</a>
                 </div>
-                <div id="tutorials" className="text-white tab-pane">
-                    Contents of the tutorials tab
+                <div id="tutorials" className={tutorials ? "block" : "hidden"}>
+                    <a className= "font-body font-semibold text-3xl">Contents of the tutorials tab</a>
                 </div>
             </div>
         </main>
     )
 }
+
+/**
+ * Gets the session server-side and redirects to the login-page
+ * if there is no active session
+ * 
+ * @param context Request information passed to the server.
+ * @returns props
+ */
+ export const getServerSideProps: GetServerSideProps = async (context) => {
+    var session: Session | null = await getSession(context)
+    if (!session) {
+        return {
+            redirect: {
+                destination: "/"
+            },
+            props: {}
+        }
+    }
+
+    return {props: {}};
+}
+
 
 export default Main;

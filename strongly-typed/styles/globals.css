@@ -9,7 +9,7 @@
 }
 
 .active-tab {
-    @apply px-12 py-2 text-xl text-white bg-stgray-100 border-b-4 border-white;
+    @apply px-12 py-2 text-xl text-mint bg-stgray-100 border-b-4 border-mint;
 }
 
 .inactive-tab {
