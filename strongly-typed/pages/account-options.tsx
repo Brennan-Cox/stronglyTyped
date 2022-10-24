@@ -4,6 +4,7 @@ import Router from 'next/router'
 import Link from 'next/link';
 import { useState, FormEvent } from 'react'
 import { signIn, getSession } from 'next-auth/react'
+import { Session } from 'next-auth';
 
 /**
  * 
@@ -104,31 +105,25 @@ const CreateAccount: NextPage = () => {
     )
 }
 
-
-// The getServerSideProps function is commented out to allow for testing of the account-options webpage - if it is enabled, the user gets redirected to the main page if they have a valid login
-
-
 /**
- * Gets the session server-side and redirects to the main-page
- * if there is a session active
+ * Gets the session server-side and redirects to the login-page
+ * if there is no active session
  * 
  * @param context Request information passed to the server.
  * @returns props
  */
-// export const getServerSideProps: GetServerSideProps = async (context) => {
-//     // Get stored session
-//     var session = await getSession(context)
+ export const getServerSideProps: GetServerSideProps = async (context) => {
+    var session: Session | null = await getSession(context)
+    if (!session) {
+        return {
+            redirect: {
+                destination: "/"
+            },
+            props: {}
+        }
+    }
 
-//     // If there is a session redirect them to the main-page
-//     if (session) {
-//         return {
-//             redirect: {
-//                 destination: "/main-page"
-//             },
-//             props: {}
-//         }
-//     }
-//     return { props: {} }
-// }
+    return {props: {}};
+}
 
 export default CreateAccount;
