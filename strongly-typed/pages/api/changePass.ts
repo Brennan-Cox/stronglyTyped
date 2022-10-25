@@ -4,7 +4,8 @@ import { Client, QueryResult } from "pg";
 import bcrypt from 'bcrypt'
 
 /**
- * 
+ * this function will access the database and if the user input the correct password they may
+ * change their account password
  * 
  * @param req 
  * @param res 
@@ -23,7 +24,10 @@ export default async function change(req: NextApiRequest, res: NextApiResponse) 
         var hashed_password: string = await bcrypt.hash(req.body.newPassword, 10)
         values = [hashed_password, condition];
         try {
-
+            
+            if (req.body.newPassword != req.body.confirmNewPassword) {
+                throw {code: '2002'}
+            }
             //connect, autorize? update : no-update
             client.connect()
 
@@ -40,20 +44,23 @@ export default async function change(req: NextApiRequest, res: NextApiResponse) 
                     await client.query('UPDATE Users SET password = $1 WHERE username = $2', values)
                 } else {
                     //incorrect Password
-                    throw new Error('2000');
+                    throw {code: '2001'};
                 }
-            } else {
-                //incorrect Username
-                throw new Error('2000');
             }
             //end
             res.status(200).end()
         } catch (e: any) {
             switch (e.code) {
                 case '23505':
-                    res.status(400).json({error: "Username already taken"});
+                    res.status(400).json({ error: "Username already taken" });
                     break;
-                default: res.status(400).json({error: "Error connecting to database"});
+                case '2001':
+                    res.status(401).json({ error: "Incorrect Password" });
+                    break;
+                case '2002':
+                    res.status(401).json({ error: "Password and confirm password doesn't match" });
+                    break;
+                default: res.status(400).json({ error: "Error connecting to database" });
             }
         }
     }

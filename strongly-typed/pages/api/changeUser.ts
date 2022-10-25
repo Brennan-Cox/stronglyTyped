@@ -22,16 +22,37 @@ export default async function change(req: NextApiRequest, res: NextApiResponse) 
 
             //connect and query
             await client.connect();
+            await auth(client, req.body.currentUser, req.body.currentPassword)
             await client.query('UPDATE Users SET username = $1 WHERE username = $2', values)
-            
+
             res.status(200).end()
         } catch (e: any) {
             switch (e.code) {
                 case '23505':
-                    res.status(400).json({error: "Username already taken"});
+                    res.status(400).json({ error: "Username already taken" });
                     break;
-                default: res.status(400).json({error: "Error connecting to database"});
+                case '2001':
+                    res.status(401).json({ error: "Incorrect Password" });
+                    break;
+                default: res.status(400).json({ error: "Error connecting to database" });
             }
+        }
+    }
+}
+
+async function auth(client: Client, username: string, password: string) {
+
+    //authorize
+    var response: QueryResult<any> = await client.query('SELECT id, username, password from Users WHERE Username = $1', [username])
+    console.log(response)
+    if (response.rowCount > 0) {
+        var user: any = response.rows[0]
+        var hashedPassword: string = user.password
+        var isSame: boolean = await bcrypt.compare(password, hashedPassword)
+
+        //if authorized
+        if (!isSame) {
+            throw {code: '2001'};
         }
     }
 }

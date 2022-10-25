@@ -1,6 +1,5 @@
 // Copy over the stuff from create account, but get a framework for what it will look like
 import type { NextPage, GetServerSideProps } from 'next'
-import Router from 'next/router'
 import Link from 'next/link';
 import { useState, FormEvent } from 'react'
 import { signIn, getSession, signOut, getCsrfToken } from 'next-auth/react'
@@ -29,31 +28,25 @@ const AccountOptions: NextPage = () => {
         event.preventDefault()
         setError('')
 
-        // Check if both passwords are the same
-        if (newPassword === confirmNewPassword) {
+        // Create a new user in the database
+        var results: Response = await fetch('/api/changePass', {
+            method: "POST",
+            body: JSON.stringify({ currentUser: currentUser, currentPassword: currentPassword, newPassword: newPassword, confirmNewPassword: confirmNewPassword }),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
 
-            // Create a new user in the database
-            var results: Response = await fetch('/api/changePass', {
-                method: "POST",
-                body: JSON.stringify({ currentUser: currentUser, currentPassword: currentPassword, newPassword: newPassword }),
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-            })
+        currentPassword = newPassword;
 
-            currentPassword = newPassword;
+        // Check if the request was successful
+        if (results.ok) {
 
-            // Check if the request was successful
-            if (results.ok) {
-                
-                await signIn('credentials', { username: currentUser, password: newPassword, redirect: false})
-            } else {
-                // Display the error message
-                var error: string = await results.json()
-                setError(error)
-            }
+            await signIn('credentials', { username: currentUser, password: newPassword, redirect: false })
         } else {
-            setError("Password and confirm password doesn't match")
+            // Display the error message
+            var errorResponse = await results.json()
+            setError(errorResponse.error)
         }
     }
 
@@ -64,7 +57,7 @@ const AccountOptions: NextPage = () => {
 
         var results: Response = await fetch('/api/changeUser', {
             method: "POST",
-            body: JSON.stringify({ currentUser: currentUser, newUser: newUser }),
+            body: JSON.stringify({ currentUser: currentUser, newUser: newUser, currentPassword: currentPassword }),
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -76,8 +69,8 @@ const AccountOptions: NextPage = () => {
             await signIn('credentials', { username: newUser, password: currentPassword, redirect: false })
         } else {
 
-            var error: string = await results.json()
-            setError(error)
+            var errorResponse = await results.json()
+            setError(errorResponse.error)
         }
     }
 
@@ -90,7 +83,7 @@ const AccountOptions: NextPage = () => {
     function ErrorMessage(): JSX.Element {
         if (error) {
             //issue exsists where error is not caught
-            return (<p className='text-red-400 text-center'>{error.toString()}</p>)
+            return (<p className='text-red-400 text-center'>{error}</p>)
         }
         return (<p></p>)
     }
