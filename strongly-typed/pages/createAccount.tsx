@@ -60,7 +60,8 @@ const CreateAccount: NextPage = () => {
      */
     function ErrorMessage(): JSX.Element {
         if (error) {
-            return (<p className='text-red-400 text-center'>{error}</p>)
+            //issue exsists where error is not right
+            return (<p className='text-red-400 text-center'>{error.toString()}</p>)
         }
         return (<p></p>)
     }

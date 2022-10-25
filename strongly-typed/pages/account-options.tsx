@@ -3,47 +3,50 @@ import type { NextPage, GetServerSideProps } from 'next'
 import Router from 'next/router'
 import Link from 'next/link';
 import { useState, FormEvent } from 'react'
-import { signIn, getSession } from 'next-auth/react'
+import { signIn, getSession, signOut, getCsrfToken } from 'next-auth/react'
 import { Session } from 'next-auth';
 
 /**
  * 
  */
-const CreateAccount: NextPage = () => {
+const AccountOptions: NextPage = () => {
 
-    var [username, setUsername] = useState('')
-    var [password, setPassword] = useState('')
-    var [confirmPassword, setConfirmPassword] = useState('')
+    var [currentUser, setUserName] = useState('')
+    getUsername()
+    var [newUser, setNewUsername] = useState('')
+    var [currentPassword, setCurrentPassword] = useState('')
+    var [newPassword, setNewPassword] = useState('')
+    var [confirmNewPassword, confirmPassword] = useState('')
     var [error, setError] = useState('')
 
     /**
      * Handles submitting the information the user provided to
-     * the authentication handler. On success, will create the user an account,
-     * sign them in, and redirect to main-page.
+     * the authentication handler. On success, will update user account password
      * 
      * @param event: FormEvent<HTMLFormElement>
      */
-    async function handleSignup(event: FormEvent<HTMLFormElement>) {
+    async function handleUpdatePass(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
         setError('')
 
         // Check if both passwords are the same
-        if (password === confirmPassword) {
+        if (newPassword === confirmNewPassword) {
 
             // Create a new user in the database
-            var results: Response = await fetch('/api/signup', {
+            var results: Response = await fetch('/api/changePass', {
                 method: "POST",
-                body: JSON.stringify({ username: username, password: password }),
+                body: JSON.stringify({ currentUser: currentUser, currentPassword: currentPassword, newPassword: newPassword }),
                 headers: {
                     'Content-Type': 'application/json'
                 },
             })
 
+            currentPassword = newPassword;
+
             // Check if the request was successful
             if (results.ok) {
-                // Sign the user in and redirect them
-                await signIn('credentials', { username: username, password: password, redirect: false })
-                Router.push('/main-page')
+                
+                await signIn('credentials', { username: currentUser, password: newPassword, redirect: false})
             } else {
                 // Display the error message
                 var error: string = await results.json()
@@ -51,6 +54,30 @@ const CreateAccount: NextPage = () => {
             }
         } else {
             setError("Password and confirm password doesn't match")
+        }
+    }
+
+    async function handleUpdateUser(event: FormEvent<HTMLFormElement>) {
+
+        event.preventDefault()
+        setError('')
+
+        var results: Response = await fetch('/api/changeUser', {
+            method: "POST",
+            body: JSON.stringify({ currentUser: currentUser, newUser: newUser }),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+
+        currentUser = newUser;
+
+        if (results.ok) {
+            await signIn('credentials', { username: newUser, password: currentPassword, redirect: false })
+        } else {
+
+            var error: string = await results.json()
+            setError(error)
         }
     }
 
@@ -62,7 +89,8 @@ const CreateAccount: NextPage = () => {
      */
     function ErrorMessage(): JSX.Element {
         if (error) {
-            return (<p className='text-red-400 text-center'>{error}</p>)
+            //issue exsists where error is not caught
+            return (<p className='text-red-400 text-center'>{error.toString()}</p>)
         }
         return (<p></p>)
     }
@@ -87,28 +115,35 @@ const CreateAccount: NextPage = () => {
                     </div>
                     <ErrorMessage />
                     {/* The action attribute will depend on how this page interacts with the database */}
-                    <form onSubmit={(e) => { handleSignup(e) }}>
+                    {/*Change form so that password is always required */}
+                    <h1 className="ml-6 mt-3 mb-2 text-white">Current Password</h1>
+                        <input onChange={(e) => setCurrentPassword(e.target.value)} type="password" id="password" name="password" className="w-96 ml-6 rounded-sm mb-3" required />
+                    <form onSubmit={(e) => { handleUpdateUser(e) }}>
                         <h1 className="ml-6 mt-3 mb-2 text-white">New Username</h1>
-                        <input onChange={(e) => setUsername(e.target.value)} type="text" id="username" name="username" className="w-96 ml-6 rounded-sm mb-6" />
+                        <input onChange={(e) => setNewUsername(e.target.value)} type="text" id="username" name="username" className="w-96 ml-6 rounded-sm mb-6" />
                         <div className="ml-6">
-                            <Link href="/main-page">
-                                <button className="text-mint text-center py-1 font-semibold border-2 border-mint hover:bg-stgray-100 w-40 mr-10 ml-auto">Update Username</button>
-                            </Link>
+                            <button type="submit" className="text-mint text-center py-1 font-semibold border-2 border-mint hover:bg-stgray-100 w-40 mr-10 ml-auto">Update Username</button>
                         </div>
-                        <h1 className="ml-6 mt-3 mb-2 text-white">Current Password</h1>
-                        <input onChange={(e) => setPassword(e.target.value)} type="password" id="password" name="password" className="w-96 ml-6 rounded-sm mb-3" required />
+                    </form>
+                    <form onSubmit={(e) => { handleUpdatePass(e) }}>
                         <h1 className="ml-6 mt-3 pb-2 text-white">New Password</h1>
-                        <input onChange={(e) => setConfirmPassword(e.target.value)} type="password" id="confirm_password" name="confirm_password" className="w-96 ml-6 rounded-sm mb-6" required />
+                        <input onChange={(e) => setNewPassword(e.target.value)} type="password" id="confirm_password" name="confirm_password" className="w-96 ml-6 rounded-sm mb-6" required />
+                        <h1 className="ml-6 mt-3 pb-2 text-white">Confirm New Password</h1>
+                        <input onChange={(e) => confirmPassword(e.target.value)} type="password" id="confirm_password" name="confirm_password" className="w-96 ml-6 rounded-sm mb-6" required />
                         <div className="pb-4 ml-6">
-                            <Link href="/main-page">
-                                <button className="text-mint text-center py-1 font-semibold border-2 border-mint hover:bg-stgray-100 w-40 mr-10">Update Password</button>
-                            </Link>
+                            <button type="submit" className="text-mint text-center py-1 font-semibold border-2 border-mint hover:bg-stgray-100 w-40 mr-10">Update Password</button>
                         </div>
                     </form>
                 </div>
             </div>
         </main>
     )
+    async function getUsername() {
+        const session = await getSession()
+        if (session) {
+            setUserName(session?.user.username);
+        }
+    }
 }
 
 /**
@@ -132,4 +167,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return { props: {} };
 }
 
-export default CreateAccount;
+export default AccountOptions;
