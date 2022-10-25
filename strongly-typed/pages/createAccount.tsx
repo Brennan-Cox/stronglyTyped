@@ -18,37 +18,32 @@ const CreateAccount: NextPage = () => {
      * Handles submitting the information the user provided to
      * the authentication handler. On success, will create the user an account,
      * sign them in, and redirect to main-page.
-     * 
+     *
      * @param event: FormEvent<HTMLFormElement>
      */
     async function handleSignup(event: FormEvent<HTMLFormElement>) {
         event.preventDefault()
         setError('')
 
-        // Check if both passwords are the same
-        if (password === confirmPassword) {
 
-            // Create a new user in the database
-            var results: Response = await fetch('/api/signup', {
-                method: "POST",
-                body: JSON.stringify({ username: username, password: password }),
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-            })
+        // Create a new user in the database
+        var results: Response = await fetch('/api/signup', {
+            method: "POST",
+            body: JSON.stringify({ username: username, password: password, confirmPassword: confirmPassword }),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
 
-            // Check if the request was successful
-            if (results.ok) {
-                // Sign the user in and redirect them
-                await signIn('credentials', { username: username, password: password, redirect: false })
-                Router.push('/main-page')
-            } else {
-                // Display the error message
-                var error: string = await results.json()
-                setError(error)
-            }
+        // Check if the request was successful
+        if (results.ok) {
+            // Sign the user in and redirect them
+            await signIn('credentials', { username: username, password: password, redirect: false })
+            Router.push('/main-page')
         } else {
-            setError("Password and confirm password doesn't match")
+            // Display the error message
+            var errorResponse = await results.json()
+            setError(errorResponse.error)
         }
     }
 
@@ -60,6 +55,7 @@ const CreateAccount: NextPage = () => {
      */
     function ErrorMessage(): JSX.Element {
         if (error) {
+            //issue exsists where error is not right
             return (<p className='text-red-400 text-center'>{error}</p>)
         }
         return (<p></p>)
