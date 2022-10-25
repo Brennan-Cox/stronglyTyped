@@ -71,32 +71,38 @@ const CreateAccount: NextPage = () => {
         <main className="bg-stgray-100 w-screen h-screen flex justify-center items-center">
             <div className="w-128 h-96">
                 <div className="bg-stgray-200 rounded-sm">
-                    <div className="flex justify-center py-10 px-10">
-                        <h4 className="login-text text-mint">strongly</h4>
-                        <h4 className="login-text text-white ">Typed;</h4>
+                    <div className="grid grid-cols-3">
+                        <div className="pl-10 pt-10">
+                            <Link href="/main-page">
+                                <button><svg className="w-10 h-10 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg></button>
+                            </Link>
+                        </div>
+                        <div className="flex justify-center py-10 ">
+                            <h4 className="login-text text-mint">strongly</h4>
+                            <h4 className="login-text text-white ">Typed;</h4>
+                        </div>
                     </div>
                     <div className="flex justify-center">
                         <h4 className="login-text text-white">Edit Account</h4>
-                        {/* <h1>Any fields left blank will be left unchanged</h1> */}
                     </div>
                     <ErrorMessage />
                     {/* The action attribute will depend on how this page interacts with the database */}
                     <form onSubmit={(e) => { handleSignup(e) }}>
                         <h1 className="ml-6 mt-3 mb-2 text-white">New Username</h1>
-                        <input onChange={(e) => setUsername(e.target.value)} type="text" id="username" name="username" className="w-96 ml-6 rounded-sm mb-3" />
+                        <input onChange={(e) => setUsername(e.target.value)} type="text" id="username" name="username" className="w-96 ml-6 rounded-sm mb-6" />
+                        <div className="ml-6">
+                            <Link href="/main-page">
+                                <button className="text-mint text-center py-1 font-semibold border-2 border-mint hover:bg-stgray-100 w-40 mr-10 ml-auto">Update Username</button>
+                            </Link>
+                        </div>
                         <h1 className="ml-6 mt-3 mb-2 text-white">Current Password</h1>
                         <input onChange={(e) => setPassword(e.target.value)} type="password" id="password" name="password" className="w-96 ml-6 rounded-sm mb-3" required />
-                        <h1 className="ml-6 mt-3 mb-2 text-white">New Password</h1>
-                        <input onChange={(e) => setConfirmPassword(e.target.value)} type="password" id="confirm_password" name="confirm_password" className="w-96 ml-6 rounded-sm mb-3" required />
-                        <div className="flex justify-between py-7">
-                            <div>
-                                <Link href="/main-page">
-                                    <button className="text-mint font-semibold ml-6 mt-1 hover:bg-stgray-100" >Return to Main Page</button>
-                                </Link>
-                            </div>
-                            <div>
-                                <button className="text-mint text-center py-1 font-semibold border-2 border-mint hover:bg-stgray-100 w-40 mr-10">Submit Changes</button>
-                            </div>
+                        <h1 className="ml-6 mt-3 pb-2 text-white">New Password</h1>
+                        <input onChange={(e) => setConfirmPassword(e.target.value)} type="password" id="confirm_password" name="confirm_password" className="w-96 ml-6 rounded-sm mb-6" required />
+                        <div className="pb-4 ml-6">
+                            <Link href="/main-page">
+                                <button className="text-mint text-center py-1 font-semibold border-2 border-mint hover:bg-stgray-100 w-40 mr-10">Update Password</button>
+                            </Link>
                         </div>
                     </form>
                 </div>
@@ -112,7 +118,7 @@ const CreateAccount: NextPage = () => {
  * @param context Request information passed to the server.
  * @returns props
  */
- export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
     var session: Session | null = await getSession(context)
     if (!session) {
         return {
@@ -123,7 +129,7 @@ const CreateAccount: NextPage = () => {
         }
     }
 
-    return {props: {}};
+    return { props: {} };
 }
 
 export default CreateAccount;
