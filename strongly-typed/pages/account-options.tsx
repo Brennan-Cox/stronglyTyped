@@ -6,10 +6,17 @@ import { signIn, getSession, signOut, getCsrfToken } from 'next-auth/react'
 import { Session } from 'next-auth';
 
 /**
- * 
+ * Account Options is currently a page deticated to allow for password and username changing
+ * In order for a user to update either their password or Username they should enter their password
+ * On submit of respective forms for update username or update password one of
+ * two event handle functions will call
+ * @returns void
  */
 const AccountOptions: NextPage = () => {
 
+    /*
+    This section contains the variables that either handler will use
+    */
     var [currentUser, setUserName] = useState('')
     getUsername()
     var [newUser, setNewUsername] = useState('')
@@ -21,15 +28,18 @@ const AccountOptions: NextPage = () => {
 
     /**
      * Handles submitting the information the user provided to
-     * the authentication handler. On success, will update user account password
+     * the authentication handler. 
+     * On success, will update user account password and set a success message
+     * On failure, will not update any user account information and will set a respective error message
      * 
      * @param event: FormEvent<HTMLFormElement>
      */
     async function handleUpdatePass(event: FormEvent<HTMLFormElement>) {
+
         event.preventDefault()
         setError('')
 
-        // Create a new user in the database
+        // change the user password of a user in the database
         var results: Response = await fetch('/api/changePass', {
             method: "POST",
             body: JSON.stringify({ currentUser: currentUser, currentPassword: currentPassword, newPassword: newPassword, confirmNewPassword: confirmNewPassword }),
@@ -38,24 +48,35 @@ const AccountOptions: NextPage = () => {
             },
         })
 
+        //update currentPassword variable for signin
         currentPassword = newPassword;
 
         // Check if the request was successful
         if (results.ok) {
+
+            // Display the success message and update session
             await signIn('credentials', { username: currentUser, password: newPassword, redirect: false })
             setSuccess("Password Updated Successfully")
         } else {
+
             // Display the error message
             var errorResponse = await results.json()
             setError(errorResponse.error)
         }
     }
 
+    /**
+     * This method will update username
+     * On failure, an error message will be displayed
+     * On success, a success message will be displayed
+     * @param event 
+     */
     async function handleUpdateUser(event: FormEvent<HTMLFormElement>) {
 
         event.preventDefault()
         setError('')
 
+        // change the username where a valid password is given
         var results: Response = await fetch('/api/changeUser', {
             method: "POST",
             body: JSON.stringify({ currentUser: currentUser, newUser: newUser, currentPassword: currentPassword }),
@@ -64,12 +85,16 @@ const AccountOptions: NextPage = () => {
             },
         })
 
+        //update currentUser variable to signin
         currentUser = newUser;
 
+        // Check if the request was successful
         if (results.ok) {
+            // Success message and session update
             await signIn('credentials', { username: newUser, password: currentPassword, redirect: false })
             setSuccess("Username Updated Successfully")
         } else {
+            // Error message set
             var errorResponse = await results.json()
             setError(errorResponse.error)
         }
@@ -102,6 +127,11 @@ const AccountOptions: NextPage = () => {
         return (<p></p>)
     }
 
+    /**
+     * async function that allows update of the currentUser
+     * This function should only be used where the session does not need to be
+     * updated through additional sign ins
+     */
     async function getUsername() {
         const session = await getSession()
         if (session) {
@@ -127,16 +157,17 @@ const AccountOptions: NextPage = () => {
                     <div className="flex justify-center">
                         <h4 className="login-text text-white">Edit Account</h4>
                     </div>
+                    {/*Area to print success or error message */}
                     <ErrorMessage />
                     <SuccessMessage />
-                    {/* The action attribute will depend on how this page interacts with the database */}
-                    {/*Change form so that password is always required */}
+                    {/*Area that grabs current password and 'is required' */}
                     <div className="flex justify-evenly">
                         <div>
                             <p className="mt-3 mb-2 text-mint text-xl text-center">Current Password Required for Edits</p>
                             <input onChange={(e) => setCurrentPassword(e.target.value)} type="password" id="password" name="password" className="w-96 rounded-sm mb-3" required />
                         </div>
                     </div>
+                    {/*Form intended to update the username */}
                     <form id="updateUser" onSubmit={(e) => { handleUpdateUser(e) }}>
                         <h1 className="ml-6 mt-3 mb-2 text-white">New Username</h1>
                         <input onChange={(e) => setNewUsername(e.target.value)} type="text" id="username" name="username" className="w-96 ml-6 rounded-sm mb-6" />
@@ -144,6 +175,7 @@ const AccountOptions: NextPage = () => {
                             <button type="submit" className="text-mint text-center py-1 font-semibold border-2 border-mint hover:bg-stgray-100 w-40 mr-10 ml-auto">Update Username</button>
                         </div>
                     </form>
+                    {/*Form intended to update the password */}
                     <form id="updatePassword" onSubmit={(e) => { handleUpdatePass(e) }}>
                         <h1 className="ml-6 mt-3 pb-2 text-white">New Password</h1>
                         <input onChange={(e) => setNewPassword(e.target.value)} type="password" id="confirm_password" name="confirm_password" className="w-96 ml-6 rounded-sm mb-6" required />
