@@ -30,9 +30,11 @@ export default async function change(req: NextApiRequest, res: NextApiResponse) 
         } catch (e: any) {
             switch (e.code) {
                 case '23505':
+                    // database side error code
                     res.status(400).json({ error: "Username already taken" });
                     break;
                 case '2001':
+                    // would be thrown by auth function for incorrect currentPassword value
                     res.status(401).json({ error: "Incorrect Password" });
                     break;
                 default: res.status(400).json({ error: "Error connecting to database" });
@@ -41,19 +43,34 @@ export default async function change(req: NextApiRequest, res: NextApiResponse) 
     }
 }
 
+/**
+ * This is a function that will verify that the given username and password
+ * are correspond to a row on the given client database
+ * 
+ * @param client 
+ * @param username 
+ * @param password 
+ */
 async function auth(client: Client, username: string, password: string) {
 
-    //authorize
+    //get response to query
     var response: QueryResult<any> = await client.query('SELECT id, username, password from Users WHERE Username = $1', [username])
-    console.log(response)
+    
+    //where row is returned (aka a correct username is provided)
     if (response.rowCount > 0) {
+
+        //get user and respective hashed password
         var user: any = response.rows[0]
         var hashedPassword: string = user.password
+
+        //check if the database hashed password is the same as the given password after same hash
         var isSame: boolean = await bcrypt.compare(password, hashedPassword)
 
-        //if authorized
+        //if not authorized
         if (!isSame) {
             throw {code: '2001'};
+            //password is incorrect
         }
     }
+    //****else should never occur */
 }
