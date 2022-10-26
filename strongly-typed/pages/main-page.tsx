@@ -6,6 +6,8 @@ import { Session } from 'next-auth';
 import { signOut } from "next-auth/react";
 import dynamic from 'next/dynamic' //dynamic imports and components directory allow for inserting whole pages with functionality
 const StandardTab = dynamic(() => import('../components/standardTab')) //inside the html.  See line 82 and standardTab.tsx at shown path.
+const SyntaxTab = dynamic(() => import('../components/syntaxTab'))
+const TutorialsTab = dynamic(() => import('../components/tutorialsTab'))
 
 const Main: NextPage = () => {
 
@@ -88,7 +90,7 @@ const Main: NextPage = () => {
                 {/* Account options dropdown menu */}
                 <div id="account-dropdown" className="py-4 mr-4">
 
-                    <button id="username" onClick={toggle} className="hover:text-mint text-white text-2xl pr-12">{userName}</button>
+                    <button id="username" onClick={toggle} className="hover:text-mint text-white text-2xl px-12">{userName}</button>
 
                     {/* Sets the value of the style attribute to either "block" or "none" */}
                     <ul id="menu-items" style={{ display: userDropdown ? "block" : "none" }} className="font-semibold mt-1 absolute bg-stgray-200 border-2 py-2 px-2 border-mint">
@@ -102,10 +104,10 @@ const Main: NextPage = () => {
                     <StandardTab/> {/* used as example for dynamic imports */}
                 </div>
                 <div id="syntax" className={syntax ? "block" : "hidden"}>
-                    <a className= "font-body font-semibold text-3xl">Contents of the syntax tab</a>
+                    <SyntaxTab/>
                 </div>
                 <div id="tutorials" className={tutorials ? "block" : "hidden"}>
-                    <a className= "font-body font-semibold text-3xl">Contents of the tutorials tab</a>
+                    <TutorialsTab/>
                 </div>
             </div>
         </main>

@@ -17,6 +17,7 @@ const AccountOptions: NextPage = () => {
     var [newPassword, setNewPassword] = useState('')
     var [confirmNewPassword, confirmPassword] = useState('')
     var [error, setError] = useState('')
+    var [success, setSuccess] = useState('')
 
     /**
      * Handles submitting the information the user provided to
@@ -41,8 +42,8 @@ const AccountOptions: NextPage = () => {
 
         // Check if the request was successful
         if (results.ok) {
-
             await signIn('credentials', { username: currentUser, password: newPassword, redirect: false })
+            setSuccess("Password Updated Successfully")
         } else {
             // Display the error message
             var errorResponse = await results.json()
@@ -67,8 +68,8 @@ const AccountOptions: NextPage = () => {
 
         if (results.ok) {
             await signIn('credentials', { username: newUser, password: currentPassword, redirect: false })
+            setSuccess("Username Updated Successfully")
         } else {
-
             var errorResponse = await results.json()
             setError(errorResponse.error)
         }
@@ -86,6 +87,26 @@ const AccountOptions: NextPage = () => {
             return (<p className='text-red-400 text-center'>{error}</p>)
         }
         return (<p></p>)
+    }
+
+    /**
+     * Custom tag that handles displaying the sucess message upon successful update of username/password
+     * 
+     * @returns JSX.Element
+     */
+    function SuccessMessage(): JSX.Element {
+        if (success) {
+            //issue exsists where error is not caught
+            return (<p className='text-green-400 text-center'>{success}</p>)
+        }
+        return (<p></p>)
+    }
+
+    async function getUsername() {
+        const session = await getSession()
+        if (session) {
+            setUserName(session?.user.username);
+        }
     }
 
     return (
@@ -107,18 +128,23 @@ const AccountOptions: NextPage = () => {
                         <h4 className="login-text text-white">Edit Account</h4>
                     </div>
                     <ErrorMessage />
+                    <SuccessMessage />
                     {/* The action attribute will depend on how this page interacts with the database */}
                     {/*Change form so that password is always required */}
-                    <h1 className="ml-6 mt-3 mb-2 text-white">Current Password</h1>
-                        <input onChange={(e) => setCurrentPassword(e.target.value)} type="password" id="password" name="password" className="w-96 ml-6 rounded-sm mb-3" required />
-                    <form onSubmit={(e) => { handleUpdateUser(e) }}>
+                    <div className="flex justify-evenly">
+                        <div>
+                            <p className="mt-3 mb-2 text-mint text-xl text-center">Current Password Required for Edits</p>
+                            <input onChange={(e) => setCurrentPassword(e.target.value)} type="password" id="password" name="password" className="w-96 rounded-sm mb-3" required />
+                        </div>
+                    </div>
+                    <form id="updateUser" onSubmit={(e) => { handleUpdateUser(e) }}>
                         <h1 className="ml-6 mt-3 mb-2 text-white">New Username</h1>
                         <input onChange={(e) => setNewUsername(e.target.value)} type="text" id="username" name="username" className="w-96 ml-6 rounded-sm mb-6" />
                         <div className="ml-6">
                             <button type="submit" className="text-mint text-center py-1 font-semibold border-2 border-mint hover:bg-stgray-100 w-40 mr-10 ml-auto">Update Username</button>
                         </div>
                     </form>
-                    <form onSubmit={(e) => { handleUpdatePass(e) }}>
+                    <form id="updatePassword" onSubmit={(e) => { handleUpdatePass(e) }}>
                         <h1 className="ml-6 mt-3 pb-2 text-white">New Password</h1>
                         <input onChange={(e) => setNewPassword(e.target.value)} type="password" id="confirm_password" name="confirm_password" className="w-96 ml-6 rounded-sm mb-6" required />
                         <h1 className="ml-6 mt-3 pb-2 text-white">Confirm New Password</h1>
@@ -131,12 +157,6 @@ const AccountOptions: NextPage = () => {
             </div>
         </main>
     )
-    async function getUsername() {
-        const session = await getSession()
-        if (session) {
-            setUserName(session?.user.username);
-        }
-    }
 }
 
 /**
