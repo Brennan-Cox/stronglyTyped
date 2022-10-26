@@ -4,7 +4,8 @@ import { Client, QueryResult } from "pg";
 import bcrypt from 'bcrypt'
 
 /**
- * 
+ * this function will access the database and if the user inputs the correct password they may
+ * change their account username
  * 
  * @param req 
  * @param res 

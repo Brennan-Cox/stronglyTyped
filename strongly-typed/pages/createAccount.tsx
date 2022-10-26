@@ -88,14 +88,9 @@ const CreateAccount: NextPage = () => {
                         <input onChange={(e) => setPassword(e.target.value)} type="password" id="password" name="password" className="w-96 ml-6 rounded-sm mb-3" required />
                         <h1 className="ml-6 mt-3 mb-2 text-white">Re-Enter Password</h1>
                         <input onChange={(e) => setConfirmPassword(e.target.value)} type="password" id="confirm_password" name="confirm_password" className="w-96 ml-6 rounded-sm mb-3" required />
-                        <div className="flex justify-between py-7">
+                        <div className="flex justify-evenly py-7">
                             <div>
-                                <Link href="/">
-                                    <a className="text-mint font-semibold ml-6 mt-1 hover:bg-stgray-100" >Return to Login Page</a>
-                                </Link>
-                            </div>
-                            <div>
-                                <button type="submit" className="text-mint text-center py-1 font-semibold border-2 border-mint hover:bg-stgray-100 w-40 mr-10">Create Account</button>
+                                <button type="submit" className="text-mint text-center font-semibold border-2 border-mint hover:bg-stgray-100 w-40 mr-10">Create Account</button>
                             </div>
                         </div>
                     </form>
