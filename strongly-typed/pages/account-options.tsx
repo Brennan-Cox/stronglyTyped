@@ -140,8 +140,8 @@ const AccountOptions: NextPage = () => {
     }
 
     return (
-        <main className="bg-stgray-100 w-screen h-screen flex justify-center items-center">
-            <div className="w-128 h-96">
+        <main className="bg-stgray-100 h-screen flex justify-center items-center">
+            <div className="w-128">
                 <div className="bg-stgray-200 rounded-sm">
                     <div className="grid grid-cols-3">
                         <div className="pl-10 pt-10">

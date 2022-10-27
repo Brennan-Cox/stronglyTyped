@@ -18,6 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             await client.query('INSERT INTO Users(username, password) VALUES($1, $2)', values)
             res.status(200).end()
         } catch (e: any) {
+            console.log(e.message);
             switch (e.code) {
                 case '23505':
                     res.status(400).json({ error: "Username already taken" });
