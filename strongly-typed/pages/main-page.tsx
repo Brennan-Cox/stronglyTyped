@@ -99,7 +99,7 @@ const Main: NextPage = () => {
                     </ul>
                 </div>
             </div>
-            <div id="main-tabs" className="bg-stgray-100 h-screen text-center">
+            <div id="main-tabs" className="bg-stgray-100 text-center">
                 <div id="standard" className={standard ? "block" : "hidden"}>
                     <StandardTab/> {/* used as example for dynamic imports */}
                 </div>
