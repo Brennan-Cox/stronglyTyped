@@ -7,8 +7,14 @@ import React from 'react';
 var elementArr: JSX.Element[] = []
 var characters: string[] = []
 var correct: boolean[] = []
-var drillTexts: string[] = ['drill1', 'drill2']
+var tutorialTitles: string[] = ["Index Fingers", "Middle Fingers", "Ring Fingers", "Pinky Fingers", "Math Symbols", "Syntax Symbols", "Punctuation"]
+var drillTexts: string[] = ["Example text for Drill one Something Uppercase a few $ymbol$ and. punctuation!", 
+                            "Another set of text for Drill Two let's get this project done ASAP please dear lord this semester is killing me"]
 var drillIndex: number = 0
+var testStarted: boolean = false
+var startTime: number = 0
+var testEnded: boolean = false;
+
 
 //cursor index
 var charIndex: number = 0
@@ -17,6 +23,9 @@ function TutorialsTab() {
 
     //hook designed to allow for refresh when element is set
     var [displayArr, SetElementArr] = useState(elementArr)
+    var [displayResults, SetDisplayResults] = useState(false)
+    var [wpm, SetWpm] = useState('')
+    var [accuracy, SetAccuracy] = useState('')
 
     /**
      * Method will allow for selection of a drill on click from html buttons
@@ -25,7 +34,7 @@ function TutorialsTab() {
     function selectDrill(drill: number) {
 
         drillIndex = drill
-        setInitalText(drillTexts[drillIndex])
+        setInitialText(drillTexts[drillIndex])
     }
 
     /**
@@ -48,7 +57,7 @@ function TutorialsTab() {
      * @param key 
      */
     function backspace(key: string) {
-        if (key === 'Backspace' && charIndex > 0) {
+        if (key === 'Backspace' && charIndex > 0 && !testEnded) {
 
             //set element white at current index
             resetJSXElement()
@@ -67,7 +76,19 @@ function TutorialsTab() {
      * Function indended to grab input and process
      * @param character
      */
-    function inputCharacter(input: HTMLInputElement) {
+    function inputCharacter(input: HTMLTextAreaElement) {
+
+        //start "timer" for test upon first text entry
+        if (!testStarted) {
+            testStarted = true;
+            const date: Date = new Date()
+            startTime = date.getTime()
+        }
+        //do not allow input if test is ended and results are displayed
+        if (testEnded) {
+            input.value = ''
+            return
+        }
 
         //get the character at index
         let nextCharacter = input.value
@@ -83,7 +104,9 @@ function TutorialsTab() {
         }
         //go next and update
         charIndex++
-        /***************************end test here ********************/
+        if (charIndex == characters.length) {
+            endDrill()
+        }
         updateCursor()
         updateElementArray()
         //clear input
@@ -103,7 +126,7 @@ function TutorialsTab() {
      * This will set an initial text of a given string
      * @param input 
      */
-    function setInitalText(input: string) {
+    function setInitialText(input: string) {
         //split up this string into an array of characters (global)
         characters = input.split('');
 
@@ -111,6 +134,10 @@ function TutorialsTab() {
         elementArr = []
         correct = []
         charIndex = 0
+        startTime = 0
+        testStarted = false
+        testEnded = false
+        SetDisplayResults(false)
 
         //set each JSX element as a span with a single character of white text
         characters.forEach((character, i) => {
@@ -148,6 +175,33 @@ function TutorialsTab() {
      */
     function updateCursor() {
         elementArr[charIndex] = <span className="text-white underline" key={charIndex}>{characters[charIndex]}</span>
+    }
+
+    /**
+     * Calculates results of performing
+     */
+    function endDrill() {
+        testEnded = true;
+        const date: Date = new Date()
+        var endTime: number = date.getTime()
+        var numWords: number = characters.length / 5;
+        var testMinutes: number = ((endTime - startTime) / 1000) / 60 
+        var wpm: number = numWords / testMinutes
+        SetWpm(wpm.toFixed(2))
+
+        var correctCount = 0
+        correct.forEach((result) => {
+            if (result) {
+                correctCount++
+            }
+        })
+        var accuracy: number = ((correctCount / correct.length) * 100)
+        SetAccuracy(accuracy.toFixed(2))
+
+        //setAverageScore() from database, may be able to pull and store in page on load
+        //check if high score needs updating
+
+        SetDisplayResults(true)
     }
 
     return (
@@ -192,13 +246,22 @@ function TutorialsTab() {
                     </tbody>
                 </table>
             </div>
-            <div className="flex justify-center mt-20 mr-20 px-20 bg-mint rounded-3xl w-1/2">
-                <div>
-                    <br />
-                    <DisplayTutorialText />
-                    <input onKeyDown={e => backspace(e.key)} onChange={(e) => inputCharacter(e.target)} className="bg-stgray-200 resize-none text-white rounded-2xl pd-10 pl-2 pr-2" name="input" id="input"></input>
-                    <br />
-                    <button onClick={() => setInitalText(drillTexts[drillIndex])}>reset</button>
+            <div className="flex justify-center mt-20 bg-mint rounded-3xl w-1/2">
+                <div className="text-lg">
+                    <h2 className="text-3xl font-bold pt-10">{tutorialTitles[drillIndex]}</h2>
+                    <br/>
+                    <DisplayTutorialText/>
+                    <br/>
+                    <textarea onKeyDown={e => backspace(e.key)} onChange={(e) => inputCharacter(e.target)} className="text-white bg-stgray-200 resize-none rounded-xl w-80 h-7" placeholder="Click here and start typing to begin!"></textarea>
+                    <br/>
+                    <button onClick={() => setInitialText(drillTexts[drillIndex])} className = "text-white bg-stgray-200 rounded-md mt-5 pr-2 pl-2">Reset Drill</button>
+                    <br/>
+                    <div className = {displayResults ? "block" : "hidden"}>
+                        <br/>
+                        <h3 className = "text-xl font-bold">Drill Complete!</h3>
+                        <p>Words Per Minute: {wpm}</p>
+                        <p>Accuracy: {accuracy}%</p>
+                    </div>
                 </div>
             </div>
         </div>
