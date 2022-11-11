@@ -117,7 +117,10 @@ const Main: NextPage = (props: any) => {
         }
     }
     return {
-        props: {username: session.user.username}
+        redirect: {
+            destination: '/standard/1'
+        },
+        props: {}
     }
 }
 
