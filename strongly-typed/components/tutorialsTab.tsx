@@ -1,5 +1,6 @@
 import { useState } from "react";
 import React from 'react';
+import Link from "next/link";
 
 /**
  * create element array characters elements and booleans and a respective index
@@ -7,35 +8,21 @@ import React from 'react';
 var elementArr: JSX.Element[] = []
 var characters: string[] = []
 var correct: boolean[] = []
-var tutorialTitles: string[] = ["Index Fingers", "Middle Fingers", "Ring Fingers", "Pinky Fingers", "Math Symbols", "Syntax Symbols", "Punctuation"]
-var drillTexts: string[] = ["Example text for Drill one Something Uppercase a few $ymbol$ and. punctuation!", 
-                            "Another set of text for Drill Two let's get this project done ASAP please dear lord this semester is killing me"]
 var drillIndex: number = 0
 var testStarted: boolean = false
 var startTime: number = 0
 var testEnded: boolean = false;
 
-
 //cursor index
 var charIndex: number = 0
 
-function TutorialsTab() {
+function TutorialsTab(props: any) {
 
     //hook designed to allow for refresh when element is set
     var [displayArr, SetElementArr] = useState(elementArr)
     var [displayResults, SetDisplayResults] = useState(false)
     var [wpm, SetWpm] = useState('')
     var [accuracy, SetAccuracy] = useState('')
-
-    /**
-     * Method will allow for selection of a drill on click from html buttons
-     * @param drill 
-     */
-    function selectDrill(drill: number) {
-
-        drillIndex = drill
-        setInitialText(drillTexts[drillIndex])
-    }
 
     /**
      * This function will ensure that a new element will be set in the HTML document
@@ -198,10 +185,73 @@ function TutorialsTab() {
         var accuracy: number = ((correctCount / correct.length) * 100)
         SetAccuracy(accuracy.toFixed(2))
 
+        updateAverageScore(props.userID, props.test.id, wpm, accuracy)
+        updateHighScore(props.userID, props.test.id, wpm, accuracy)
         //setAverageScore() from database, may be able to pull and store in page on load
         //check if high score needs updating
 
+
         SetDisplayResults(true)
+    }
+
+    /**
+     * 
+     * @param userID Sends a request to the API route to update the average score. Database handles
+     * updating the table with the wpm, accuracy and the number of attempts.
+     * 
+     * @param testID 
+     * @param wpm 
+     * @param accuracy 
+     */
+    async function updateAverageScore(userID: number, testID: number, wpm: number, accuracy: number) {
+        await fetch('/api/updateaveragescores', {
+            method: "PUT",
+            body: JSON.stringify({ user_id: userID, test_id: testID, wpm: wpm.toFixed(2), accuracy: accuracy.toFixed(2) }),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+    }
+
+    /**
+     * Sends a request to the API route to update leaderboards. Database handles updating
+     * the table if the user beats their highscore.
+     * 
+     * @param userID 
+     * @param testID 
+     * @param wpm 
+     * @param accuracy 
+     */
+    async function updateHighScore(userID: number, testID: number, wpm: number, accuracy: number) {
+
+        var response: Response = await fetch('/api/updateleaderboards', {
+            method: "PUT",
+            body: JSON.stringify({ user_id: userID, test_id: testID, wpm: wpm.toFixed(2), accuracy: accuracy.toFixed(2) }),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+
+        if (response.ok) {
+            var results = await response.json()
+            var didBeatHighscore = results.didBeatHighscore
+            // Can display a message to the user saying they beat their highscore
+        }
+    }
+    /** 
+     * Checks to see if there is a value at the given index and returns
+     * an element with the users score values. If not it returns placeholder data
+     * 
+     * @param index 
+     * @returns JSX.Element
+     */
+    function ScoreRow(index: any): JSX.Element {
+        var index = index.index
+        if (props.scores.at(index) != undefined) {
+            return (<td>{props.scores.at(index).high_wpm} WPM / {props.scores.at(index).high_accuracy}%</td>)
+        } else {
+            return (<td>WPM / %Acc</td>)
+        }
     }
 
     return (
@@ -216,45 +266,45 @@ function TutorialsTab() {
                     </thead>
                     <tbody className="text-white text-2xl">
                         <tr className="border-b border-white px-3">
-                            <td className="py-4 hover:text-mint"><button onClick={e => selectDrill(0)}>Index Fingers</button></td>
-                            <td>WPM / %Acc</td>
+                            <td className="py-4 hover:text-mint"><Link href="/tutorials/1">Index Fingers</Link></td>
+                            <ScoreRow index={0}/>
                         </tr>
                         <tr className="border-b border-white px-3">
-                            <td className="py-4 hover:text-mint"><button onClick={e => selectDrill(1)}>Middle Fingers</button></td>
-                            <td>WPM / %Acc</td>
+                            <td className="py-4 hover:text-mint"><Link href="/tutorials/2">Middle Fingers</Link></td>
+                            <ScoreRow index={1}/>
                         </tr>
                         <tr className="border-b border-white px-3">
-                            <td className="py-4 hover:text-mint"><button>Ring Fingers</button></td>
-                            <td>WPM / %Acc</td>
+                            <td className="py-4 hover:text-mint"><Link href="/tutorials/3">Ring Fingers</Link></td>
+                            <ScoreRow index={2}/>
                         </tr>
                         <tr className="border-b border-white px-3">
-                            <td className="py-4 hover:text-mint"><button>Pinky Fingers</button></td>
-                            <td>WPM / %Acc</td>
+                            <td className="py-4 hover:text-mint"><Link href="/tutorials/4">Pinky Fingers</Link></td>
+                            <ScoreRow index={3}/>
                         </tr>
                         <tr className="border-b border-white px-3">
-                            <td className="py-4 hover:text-mint"><button>Math Symbols</button></td>
-                            <td>WPM / %Acc</td>
+                            <td className="py-4 hover:text-mint"><Link href="/tutorials/5">Math Symbols</Link></td>
+                            <ScoreRow index={4}/>
                         </tr>
                         <tr className="border-b border-white px-3">
-                            <td className="py-4 hover:text-mint"><button>Syntax Symbols</button></td>
-                            <td>WPM / %Acc</td>
+                            <td className="py-4 hover:text-mint"><Link href="/tutorials/6">Syntax Symbols</Link></td>
+                            <ScoreRow index={5}/>
                         </tr>
                         <tr className="border-b border-white px-3">
-                            <td className="py-4 hover:text-mint"><button>Punctuation</button></td>
-                            <td>WPM / %Acc</td>
+                            <td className="py-4 hover:text-mint"><Link href="/tutorials/7">Punctuation</Link></td>
+                            <ScoreRow index={6}/>
                         </tr>
                     </tbody>
                 </table>
             </div>
             <div className="flex justify-center mt-20 bg-mint rounded-3xl w-1/2">
                 <div className="text-lg">
-                    <h2 className="text-3xl font-bold pt-10">{tutorialTitles[drillIndex]}</h2>
+                    <h2 className="text-3xl font-bold pt-10">{props.test.name}</h2>
                     <br/>
                     <DisplayTutorialText/>
                     <br/>
                     <textarea onKeyDown={e => backspace(e.key)} onChange={(e) => inputCharacter(e.target)} className="text-white bg-stgray-200 resize-none rounded-xl w-80 h-7" placeholder="Click here and start typing to begin!"></textarea>
                     <br/>
-                    <button onClick={() => setInitialText(drillTexts[drillIndex])} className = "text-white bg-stgray-200 rounded-md mt-5 pr-2 pl-2">Reset Drill</button>
+                    <button onClick={() => setInitialText(props.test.text)} className = "text-white bg-stgray-200 rounded-md mt-5 pr-2 pl-2">Reset Drill</button>
                     <br/>
                     <div className = {displayResults ? "block" : "hidden"}>
                         <br/>
