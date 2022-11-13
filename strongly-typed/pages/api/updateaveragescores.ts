@@ -14,13 +14,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         var userID = req.body.user_id
         var wpm = req.body.wpm
         var accuracy = req.body.accuracy
+        var type = req.body.type
 
         try {
             var client = new Client(config)
             await client.connect()
-            var values = [userID, testID, accuracy, wpm]
+            var values = [userID, testID, accuracy, wpm, type]
             // Store procedure in database that handles updating a user's test with the wpm and accurcy.
-            await client.query('CALL updateAverageScores($1, $2, $3::NUMERIC, $4::NUMERIC)', values);
+            await client.query('CALL updateAverageScores($1, $2, $3::NUMERIC, $4::NUMERIC, $5)', values);
             res.status(200).end()
         } catch(e: any) {
             switch (e.code) {

@@ -17,8 +17,21 @@ const TutorialPage: NextPage = (props: any) => {
     function toggle() {
         setUserDropdown(!userDropdown);
     }
-    
 
+    /**
+     * This will set an initial text of a given string
+     * @param input 
+     */
+     function setInitialText(text: string) : JSX.Element[] {
+        var elementArr: JSX.Element[] = []
+        //set each JSX element as a span with a single character of white text
+        text.split('').forEach((character, i) => {
+            let element: JSX.Element = <span className="text-white" key={i}>{character}</span>
+            elementArr.push(element)
+        })
+        //you may simply set the element array because display is a different object
+        return elementArr
+    }
 
     // Anything wrapped in this return statement is HTML
     return (
@@ -53,7 +66,7 @@ const TutorialPage: NextPage = (props: any) => {
                 </div>
             </div>
             <div id="main-tabs" className="bg-stgray-100 h-screen text-center">
-                <TutorialsTab userID={props.userID} test={props.test} scores={props.scores}/>
+                <TutorialsTab initialText= {setInitialText(props.test.text)} userID={props.userID} test={props.test} scores={props.scores} averageScore={props.averageScore}/>
             </div>
         </main>
     )
@@ -87,9 +100,12 @@ const TutorialPage: NextPage = (props: any) => {
         if (tests.length > 0) {
             values = [session.user.id, 'tutorial']
             // Get personal highscores for all tutorials
-            var { rows: highScores } = await client.query('SELECT * FROM Leaderboards l INNER JOIN tests t ON l.test_id = t.id WHERE user_id = $1 and t.type = $2 ORDER BY l.test_id', values)
+            var { rows: highScores } = await client.query('SELECT * FROM Leaderboards l INNER JOIN tests t ON l.test_id = t.id AND l.type = t.type WHERE user_id = $1 and t.type = $2 ORDER BY l.test_id', values)
+            values = [session.user.id, context.query.id]
+            var { rows: averageScore } = await client.query('SELECT * FROM Scores WHERE user_id = $1 and test_id = $2', values)
+            console.log(averageScore)
             await client.end()
-            return {props: {user: session.user, test: tests[0], scores: highScores, userID: session.user.id}};
+            return {props: {user: session.user, test: tests[0], scores: highScores, userID: session.user.id, averageScore: averageScore}};
         }
 
         // If the test id is not a tutorial. Return a 404
@@ -103,7 +119,7 @@ const TutorialPage: NextPage = (props: any) => {
         }
     }
 
-    return {props: {user: session.user, scores: []}};
+    return {props: {user: session.user, scores: [], averageScore: []}};
 }
 
 export default TutorialPage;

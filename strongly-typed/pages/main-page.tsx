@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { getSession } from 'next-auth/react';
 import { Session } from 'next-auth';
 import { signOut } from "next-auth/react";
-import dynamic from 'next/dynamic' //dynamic imports and components directory allow for inserting whole pages with functionality
-const StandardTab = dynamic(() => import('../components/standardTab')) //inside the html.  See line 82 and standardTab.tsx at shown path.
+import dynamic from 'next/dynamic' 
+const StandardTab = dynamic(() => import('../components/standardTab'))
 const SyntaxTab = dynamic(() => import('../components/syntaxTab'))
 const TutorialsTab = dynamic(() => import('../components/tutorialsTab'))
 
@@ -86,7 +86,7 @@ const Main: NextPage = (props: any) => {
             </div>
             <div id="main-tabs" className="bg-stgray-100 text-center">
                 <div id="standard" className={standard ? "block" : "hidden"}>
-                    <StandardTab/> {/* used as example for dynamic imports */}
+                    <StandardTab/>
                 </div>
                 <div id="syntax" className={syntax ? "block" : "hidden"}>
                     <SyntaxTab/>

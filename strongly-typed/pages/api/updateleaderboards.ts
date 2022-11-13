@@ -14,14 +14,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         var userID = req.body.user_id
         var wpm = req.body.wpm
         var accuracy = req.body.accuracy
+        var type = req.body.type
 
         try {
             var client = new Client(config)
             await client.connect()
-            var values = [userID, testID, accuracy, wpm]
+            var values = [userID, testID, accuracy, wpm, type]
             // Function in database that handles updating a user's highscore if they beat the previous highscore
             // Returns a boolean value if they did beat their previous highscore.
-            var { rows } = await client.query('SELECT updateHighScore($1, $2, $3::NUMERIC, $4::NUMERIC)', values);
+            var { rows } = await client.query('SELECT updateHighScore($1, $2, $3::NUMERIC, $4::NUMERIC, $5)', values);
             var result = rows[0]
             res.status(200).json({didBeatHighscore: result.updatehighscore})
         } catch(e: any) {

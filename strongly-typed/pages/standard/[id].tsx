@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { Session } from 'next-auth';
 import { getSession } from 'next-auth/react';
 import { signOut } from "next-auth/react";
+import config from '../../pg_config';
+import { Client } from 'pg'
 import StandardTab from '../../components/standardTab'
 
 const StandardPage: NextPage = (props: any) => {
@@ -15,8 +17,6 @@ const StandardPage: NextPage = (props: any) => {
     function toggle() {
         setUserDropdown(!userDropdown);
     }
-    
-
 
     // Anything wrapped in this return statement is HTML
     return (
@@ -51,7 +51,7 @@ const StandardPage: NextPage = (props: any) => {
                 </div>
             </div>
             <div id="main-tabs" className="bg-stgray-100 h-screen text-center">
-                <StandardTab />
+                <StandardTab userID={props.userID} test={props.test} scores={props.scores} averageScore={props.averageScore} leaderScores={props.leaderScores}/>
             </div>
         </main>
     )
@@ -76,9 +76,38 @@ const StandardPage: NextPage = (props: any) => {
         }
     }
 
-    console.log(context.query)
+    var client = new Client(config)
+    try {
+        await client.connect()
+        var values = [context.query.id, 'standard']
+        var { rows: tests } = await client.query('SELECT * FROM Tests WHERE id = $1 AND type = $2', values)
+        // Make sure that the test id is a tutorial
+        if (tests.length > 0) {
+            values = [session.user.id, 'standard']
+            // Get personal highscores for all tutorials
+            var { rows: highScores } = await client.query('SELECT * FROM Leaderboards l INNER JOIN tests t ON l.test_id = t.id AND l.type = t.type WHERE user_id = $1 and t.type = $2 ORDER BY l.test_id', values)
+            values = [session.user.id, context.query.id]
+            var { rows: averageScore } = await client.query('SELECT * FROM Scores WHERE user_id = $1 and test_id = $2', values)
+            console.log(averageScore)
+            values = ['standard', context.query.id]
+            var { rows: leaderScores } = await client.query('SELECT * FROM Leaderboards l INNER JOIN users u ON l.user_id = u.id WHERE type = $1 and test_id = $2 ORDER BY high_accuracy desc, high_wpm desc limit 15', values)
+            console.log(highScores)
+            await client.end()
+            return {props: {user: session.user, test: tests[0], scores: highScores, leaderScores: leaderScores, userID: session.user.id, averageScore: averageScore}};
+        }
 
-    return {props: {user: session.user}};
+        // If the test id is not a tutorial. Return a 404
+        return {
+            notFound: true
+        }
+    } catch (e: any) {
+        switch (e.code) {
+            case 'ENOTFOUND':
+                break;
+        }
+    }
+
+    return {props: {user: session.user, scores: [], averageScore: []}};
 }
 
 export default StandardPage;
