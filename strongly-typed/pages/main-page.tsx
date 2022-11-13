@@ -1,15 +1,15 @@
-import type { NextPage, NextPageContext, GetServerSideProps } from 'next'
+import type { NextPage, GetServerSideProps } from 'next'
 import React, { useState } from "react";
 import Link from 'next/link';
 import { getSession } from 'next-auth/react';
 import { Session } from 'next-auth';
 import { signOut } from "next-auth/react";
-import dynamic from 'next/dynamic' //dynamic imports and components directory allow for inserting whole pages with functionality
-const StandardTab = dynamic(() => import('../components/standardTab')) //inside the html.  See line 82 and standardTab.tsx at shown path.
+import dynamic from 'next/dynamic' 
+const StandardTab = dynamic(() => import('../components/standardTab'))
 const SyntaxTab = dynamic(() => import('../components/syntaxTab'))
 const TutorialsTab = dynamic(() => import('../components/tutorialsTab'))
 
-const Main: NextPage = () => {
+const Main: NextPage = (props: any) => {
 
     /**
      * A React hook, "hooks" into a React feature. Let's us define a variable and a function to manipulate/interact with that variable.
@@ -53,21 +53,6 @@ const Main: NextPage = () => {
         setUserDropdown(!userDropdown);
     }
 
-    /**
-    *  Create hook for userName variable used in page navigation bar
-    *  extracts username from session variable and update hook
-    */
-    const [userName, setUserName] = useState('');
-    async function getUsername() {
-        const session = await getSession()
-        if (session) {
-            setUserName(session?.user.username);
-        }
-    }
-    getUsername(); //Call function to update username value for page
-    
-
-
     // Anything wrapped in this return statement is HTML
     return (
         <main>
@@ -90,7 +75,7 @@ const Main: NextPage = () => {
                 {/* Account options dropdown menu */}
                 <div id="account-dropdown" className="py-4 mr-4">
 
-                    <button id="username" onClick={toggle} className="hover:text-mint text-white text-2xl px-12">{userName}</button>
+                    <button id="username" onClick={toggle} className="hover:text-mint text-white text-2xl px-12">{props.username}</button>
 
                     {/* Sets the value of the style attribute to either "block" or "none" */}
                     <ul id="menu-items" style={{ display: userDropdown ? "block" : "none" }} className="font-semibold mt-1 absolute bg-stgray-200 border-2 py-2 px-2 border-mint">
@@ -101,13 +86,13 @@ const Main: NextPage = () => {
             </div>
             <div id="main-tabs" className="bg-stgray-100 text-center">
                 <div id="standard" className={standard ? "block" : "hidden"}>
-                    <StandardTab/> {/* used as example for dynamic imports */}
+                    <StandardTab/>
                 </div>
                 <div id="syntax" className={syntax ? "block" : "hidden"}>
                     <SyntaxTab/>
                 </div>
                 <div id="tutorials" className={tutorials ? "block" : "hidden"}>
-                    <TutorialsTab/>
+                    <TutorialsTab text="Drill54"/>
                 </div>
             </div>
         </main>
@@ -131,8 +116,12 @@ const Main: NextPage = () => {
             props: {}
         }
     }
-
-    return {props: {}};
+    return {
+        redirect: {
+            destination: '/standard/1'
+        },
+        props: {}
+    }
 }
 
 
