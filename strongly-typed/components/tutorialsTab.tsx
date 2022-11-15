@@ -1,5 +1,6 @@
 import { useState } from "react";
 import React from 'react';
+import Image from 'next/image';
 
 /**
  * create element array characters elements and booleans and a respective index
@@ -258,6 +259,36 @@ function TutorialsTab(props: any) {
         }
     }
 
+    /**
+     * Returns an image tag containing the keyboard diagram according to which test is
+     * selected in the tutorials tab.
+     * @returns JSX.Element
+     */
+    function keyboardImage() : JSX.Element {
+        if (props.test.name == "Index Fingers") {
+            return <Image src="/index-fingers.png" alt="" width={1346} height={445} />
+        }
+        else if (props.test.name == "Middle Fingers") {
+            return <Image src="/middle-fingers.png" alt="" width={1346} height={445} />
+        }
+        else if (props.test.name == "Ring Fingers") {
+            return <Image src="/ring-fingers.png" alt="" width={1346} height={445} />
+        }
+        else if (props.test.name == "Pinky Fingers") {
+            return <Image src="/pinky-fingers.png" alt="" width={1346} height={445} />
+        }
+        else if (props.test.name == "Math Symbols") {
+            return <Image src="/math-symbols.png" alt="" width={1346} height={445} />
+        }
+        else if (props.test.name == "Syntax Symbols") {
+            return <Image src="/syntax-symbols.png" alt="" width={1346} height={445} />
+        }
+        else if (props.test.name == "Punctuation") {
+            return <Image src="/punctuation.png" alt="" width={1346} height={445} />
+        }
+        return <div></div>
+    }
+
     return (
         <div className="flex justify-between">
             <div className="py-20  px-5">
@@ -317,6 +348,10 @@ function TutorialsTab(props: any) {
                         <p>Accuracy: {accuracy}%</p>
                         <h4>Average Performance:</h4>
                         <p>WPM: {averageWpm} Accuracy: {averageAcc}%</p>
+                    </div>
+
+                    <div className="py-6 px-3">
+                        {keyboardImage()}
                     </div>
                 </div>
             </div>
