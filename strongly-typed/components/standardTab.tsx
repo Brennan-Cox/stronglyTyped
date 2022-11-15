@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import React from 'react';
 import { Game } from "./GameUtility";
 import { GameUtility } from "./GameUtility";
@@ -9,12 +9,23 @@ function StandardTab(props: any) {
     var standardGame: Game = props.gameInstance
 
     //set initial state and hooks
-    var [displayArr, SetElementArr] = useState(GameUtility.toSingleJSXArray(standardGame.linesToDisplay))
+
+    //initial state preHydration
+    var [displayArr, SetElementArr] = useState(GameUtility.stringArrayToJSXArray(''.split('')))
+    //by calling useEffect a render is triggered after hydrating, this causes the "browser specific" value to be available
+    //I.E no server hydration discrepency
+    useEffect(() => SetElementArr(GameUtility.toSingleJSXArray(standardGame.linesToDisplay)), [])
+
     var [displayResults, SetDisplayResults] = useState(false)
     var [wpm, SetWpm] = useState('')
     var [accuracy, SetAccuracy] = useState('')
     var [averageWpm, SetAvgWpm] = useState('')
     var [averageAcc, SetAvgAccuracy] = useState('')
+
+    //how much time should be allowed?
+    var allowedTime: number = 60;
+    var timerStarted: boolean = false
+    var [timerDisplay, setTimer] = useState(allowedTime)
 
     /**
      * function will step next if there is still someting
@@ -24,13 +35,34 @@ function StandardTab(props: any) {
      * @param input 
      */
      function callNext(input: HTMLTextAreaElement) {
+        if (!timerStarted) {
+            startTimer()
+            timerStarted = true
+        }
         if (standardGame.next(input)) {
             SetElementArr(GameUtility.toSingleJSXArray(standardGame.linesToDisplay))
         } else {
             if (!standardGame.testEnded) {
-                endDrill(standardGame)
+                endDrill(standardGame, allowedTime)
             }
         }
+    }
+
+    /**
+     * timer operates using date class in order to be more precise
+     * 
+     */
+    function startTimer() {
+        let interval = setInterval(() => {
+            if (timerDisplay > 0) {
+                timerDisplay--
+                setTimer(timerDisplay)
+            } else {
+                if (!standardGame.testEnded) {
+                    endDrill(standardGame, allowedTime)
+                }
+            }
+        }, 1000)
     }
 
     /**
@@ -48,17 +80,12 @@ function StandardTab(props: any) {
     /**
   * Calculates results of performing
   */
-    function endDrill(game: Game) {
+    function endDrill(game: Game, seconds: number) {
+
         game.testEnded = true;
         const date: Date = new Date()
-        var endTime: number = date.getTime()
-        let numLetters = 0
-        game.lines.forEach(line => {
-            numLetters += line.length
-        })
-        var numWords: number = numLetters / 5;
-        var testMinutes: number = ((endTime - game.startTime) / 1000) / 60
-        var wpm: number = numWords / testMinutes
+        var numWords: number = game.correct.length / 5;
+        var wpm: number = numWords / (seconds / 60)
         SetWpm(wpm.toFixed(2))
 
         var correctCount = 0
@@ -216,6 +243,8 @@ function StandardTab(props: any) {
                     <textarea onKeyDown={e => callPrev(e.key)} onChange={(e) => callNext(e.target)} className="text-white bg-stgray-200 resize-none rounded-xl w-80 h-7" placeholder="Click here and start typing to begin!"></textarea>
                     <br />
                     <button className="text-white bg-stgray-200 rounded-md mt-5 pr-2 pl-2"><a href={"/standard/" + props.test.id}>Reset Test</a></button>
+                    <h3 className="text-xl font-bold pt-10">Timer</h3>
+                    <div className="text-white text-3xl">{timerDisplay}</div>
                     <br />
                     <div className={displayResults ? "block" : "hidden"}>
                         <br />

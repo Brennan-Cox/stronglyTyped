@@ -7,7 +7,7 @@ import { signOut } from "next-auth/react";
 import config from '../../pg_config';
 import { Client } from 'pg'
 import StandardTab from '../../components/standardTab'
-import { Game } from '../../components/GameUtility';
+import { Game, GameUtility } from '../../components/GameUtility';
 
 const StandardPage: NextPage = (props: any) => {
 
@@ -52,7 +52,7 @@ const StandardPage: NextPage = (props: any) => {
                 </div>
             </div>
             <div id="main-tabs" className="bg-stgray-100 h-screen text-center">
-                <StandardTab gameInstance = {new Game(props.test.text, 10, 3)} userID={props.userID} test={props.test} scores={props.scores} averageScore={props.averageScore} leaderScores={props.leaderScores}/>
+                <StandardTab gameInstance = {new Game(GameUtility.shuffleArray(props.test.text.split('|')), 20, 7)} userID={props.userID} test={props.test} scores={props.scores} averageScore={props.averageScore} leaderScores={props.leaderScores}/>
             </div>
         </main>
     )
@@ -89,10 +89,8 @@ const StandardPage: NextPage = (props: any) => {
             var { rows: highScores } = await client.query('SELECT * FROM Leaderboards l INNER JOIN tests t ON l.test_id = t.id AND l.type = t.type WHERE user_id = $1 and t.type = $2 ORDER BY l.test_id', values)
             values = [session.user.id, context.query.id]
             var { rows: averageScore } = await client.query('SELECT * FROM Scores WHERE user_id = $1 and test_id = $2', values)
-            console.log(averageScore)
             values = ['standard', context.query.id]
             var { rows: leaderScores } = await client.query('SELECT * FROM Leaderboards l INNER JOIN users u ON l.user_id = u.id WHERE type = $1 and test_id = $2 ORDER BY high_accuracy desc, high_wpm desc limit 15', values)
-            console.log(highScores)
             await client.end()
             return {props: {user: session.user, test: tests[0], scores: highScores, leaderScores: leaderScores, userID: session.user.id, averageScore: averageScore}};
         }
