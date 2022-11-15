@@ -7,6 +7,7 @@ import { signOut } from "next-auth/react";
 import config from '../../pg_config';
 import { Client } from 'pg'
 import StandardTab from '../../components/standardTab'
+import { Game } from '../../components/GameUtility';
 
 const StandardPage: NextPage = (props: any) => {
 
@@ -51,7 +52,7 @@ const StandardPage: NextPage = (props: any) => {
                 </div>
             </div>
             <div id="main-tabs" className="bg-stgray-100 h-screen text-center">
-                <StandardTab userID={props.userID} test={props.test} scores={props.scores} averageScore={props.averageScore} leaderScores={props.leaderScores}/>
+                <StandardTab gameInstance = {new Game(props.test.text, 10, 3)} userID={props.userID} test={props.test} scores={props.scores} averageScore={props.averageScore} leaderScores={props.leaderScores}/>
             </div>
         </main>
     )
