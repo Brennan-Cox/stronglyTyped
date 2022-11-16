@@ -34,6 +34,9 @@ import React from "react"
     //keeps a catalog of the letters typed and if they were correct or not
     correct: boolean[]
 
+    //keeps a boolean array of the ASCII chart missed
+    missed: number[]
+
     /**
      * To start a game you must define the game string, the allowed characters per line
      * and how many lines you want to display
@@ -66,6 +69,10 @@ import React from "react"
         //this.startTime = -1
 
         this.correct = []
+        this.missed = []
+        for (let i = 0; i < 256; i++) {
+            this.missed.push(0)
+        }
     }
 
     setItterator(stringArray: string[], elementArray: JSX.Element[]) {
@@ -92,7 +99,7 @@ import React from "react"
         }*/
         if (!this.testEnded && this.lineItterator.hasNext()) {
 
-            this.lineItterator.next(input, this.correct)
+            this.lineItterator.next(input, this.correct, this.missed)
             return true
         } else if (!this.testEnded && this.hasNext()) {
 
@@ -198,14 +205,16 @@ export class GameIterator {
         return this.cursorIndex > 0
     }
 
-    next(input: HTMLTextAreaElement, correct: boolean[]) {
+    next(input: HTMLTextAreaElement, correct: boolean[], missed: number[]) {
 
         let charInput: string = input.value
-        if (charInput === this.characters[this.cursorIndex]) {
-            this.line[this.cursorIndex] = GameUtility.correctArray(this.characters[this.cursorIndex])
+        let characterExpected: string = this.characters[this.cursorIndex]
+        if (charInput === characterExpected) {
+            this.line[this.cursorIndex] = GameUtility.correctArray(characterExpected)
             correct.push(true)
         } else {
-            this.line[this.cursorIndex] = GameUtility.incorrectArray(this.characters[this.cursorIndex])
+            missed[characterExpected.charCodeAt(0)]++
+            this.line[this.cursorIndex] = GameUtility.incorrectArray(characterExpected)
             correct.push(false)
         }
         this.cursorIndex++
@@ -247,7 +256,13 @@ export class GameUtility {
 
         let elementArr: JSX.Element[] = []
         characters.forEach((character) => {
-            let element: JSX.Element = <span className="text-white" key={this.elementIDs++}>{character}</span>
+            let element: JSX.Element
+            if (character == '_') {
+
+                element = <br/>
+            } else {
+                element = <span className="text-white" key={this.elementIDs++}>{character}</span>
+            }
             elementArr.push(element)
         })
         return elementArr

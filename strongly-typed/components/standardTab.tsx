@@ -12,6 +12,7 @@ function StandardTab(props: any) {
 
     //initial state preHydration
     var [displayArr, SetElementArr] = useState(GameUtility.stringArrayToJSXArray(''.split('')))
+
     //by calling useEffect a render is triggered after hydrating, this causes the "browser specific" value to be available
     //I.E no server hydration discrepency
     useEffect(() => SetElementArr(GameUtility.toSingleJSXArray(standardGame.linesToDisplay)), [])
@@ -26,6 +27,9 @@ function StandardTab(props: any) {
     var allowedTime: number = 60;
     var timerStarted: boolean = false
     var [timerDisplay, setTimer] = useState(allowedTime)
+
+    var [showTutorialRecommendation, SetRecommend] = useState(false)
+    var [tutorialTabNumber, SetTutorialTabNum] = useState(1)
 
     /**
      * function will step next if there is still someting
@@ -112,6 +116,65 @@ function StandardTab(props: any) {
 
 
         SetDisplayResults(true)
+        recommendTutorial()
+    }
+
+    function recommendTutorial() {
+        let missedChar: string = getMostMissedChar().toUpperCase()
+        if (missedChar !== "NONE" && missedChar != " ") {
+            let indexFinger: string = "NBHJYUVGFTR"
+            let middleFinger: string = "CDEIKM"
+            let ringFinger: string = "OLWSX"
+            let pinkyFinger: string = "QAZ`P:'"
+            let mathSymbols: string = "123#4$5%6^78*9(0)-=+/<>"
+            let syntaxSymbols: string = "?\"\{\[\}\]|\\&_;"
+            let punctuationSymbols: string = "!,.@~"
+            let tabNum: number = 0
+            if (indexFinger.includes(missedChar)) {
+
+                tabNum = 1
+            } else if (middleFinger.includes(missedChar)) {
+
+                tabNum = 2
+            } else if (ringFinger.includes(missedChar)) {
+
+                tabNum = 3
+            } else if (pinkyFinger.includes(missedChar)) {
+
+                tabNum = 4
+            } else if (mathSymbols.includes(missedChar)) {
+
+                tabNum = 5
+            } else if (syntaxSymbols.includes(missedChar)) {
+
+                tabNum = 6
+            } else if (punctuationSymbols.includes(missedChar)) {
+
+                tabNum = 7
+            } else {
+
+
+                throw new Error("issue in identifying tutorial recommendation")
+            }
+            SetTutorialTabNum(tabNum)
+            SetRecommend(true)
+        }
+    }
+
+    function getMostMissedChar(): string {
+        let maxIndex: number = 0;
+        let max: number = 0;
+        standardGame.missed.forEach((index, i) => {
+            if (index > max) {
+                max = index
+                maxIndex = i
+            }
+        })
+        if (max != 0) {
+            return String.fromCharCode(maxIndex)
+        } else {
+            return "none"
+        }
     }
 
     /**
@@ -189,7 +252,7 @@ function StandardTab(props: any) {
         var index = index.index
         if (props.leaderScores.at(index) != undefined) {
             return (<tr className="border-b border-white">
-                <td>{props.leaderScores.at(index).user_id}</td>
+                <td>{props.leaderScores.at(index).username}</td>
                 <td>{props.leaderScores.at(index).high_wpm} WPM / {props.leaderScores.at(index).high_accuracy}%</td>
             </tr>)
         } else {
@@ -245,6 +308,7 @@ function StandardTab(props: any) {
                     <button className="text-white bg-stgray-200 rounded-md mt-5 pr-2 pl-2"><a href={"/standard/" + props.test.id}>Reset Test</a></button>
                     <h3 className="text-xl font-bold pt-10">Timer</h3>
                     <div className="text-white text-3xl">{timerDisplay}</div>
+                    <img src="http://i.stack.imgur.com/SBv4T.gif" alt="this slowpoke moves"  width="250" />
                     <br />
                     <div className={displayResults ? "block" : "hidden"}>
                         <br />
@@ -253,6 +317,10 @@ function StandardTab(props: any) {
                         <p>Accuracy: {accuracy}%</p>
                         <h4 className="text-xl font-bold">Average Performance:</h4>
                         <p>WPM: {averageWpm} Accuracy: {averageAcc}%</p>
+                    </div>
+                    <div className={showTutorialRecommendation ? "block" : "hidden"}>
+                        <br />
+                        <button className="text-white bg-stgray-200 rounded-md mt-5 pr-2 pl-2"><a href={"/tutorials/" + tutorialTabNumber}>Recommended Tutorial</a></button>
                     </div>
                 </div>
             </div>
