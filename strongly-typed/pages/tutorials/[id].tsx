@@ -103,7 +103,6 @@ const TutorialPage: NextPage = (props: any) => {
             var { rows: highScores } = await client.query('SELECT * FROM Leaderboards l INNER JOIN tests t ON l.test_id = t.id AND l.type = t.type WHERE user_id = $1 and t.type = $2 ORDER BY l.test_id', values)
             values = [session.user.id, context.query.id]
             var { rows: averageScore } = await client.query('SELECT * FROM Scores WHERE user_id = $1 and test_id = $2', values)
-            console.log(averageScore)
             await client.end()
             return {props: {user: session.user, test: tests[0], scores: highScores, userID: session.user.id, averageScore: averageScore}};
         }
