@@ -349,12 +349,16 @@ function TutorialsTab(props: any) {
                         <h4>Average Performance:</h4>
                         <p>WPM: {averageWpm} Accuracy: {averageAcc}%</p>
                     </div>
-
+                    <div>
+                    <img src="http://i.stack.imgur.com/SBv4T.gif" alt="this slowpoke moves"  width="250" />
+                    </div>
                     <div className="py-6 px-3">
                         {keyboardImage()}
                     </div>
                 </div>
             </div>
+            <div></div>
+            <div></div>
         </div>
     )
 }
