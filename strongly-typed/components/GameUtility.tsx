@@ -31,8 +31,7 @@ import React from "react"
 
     testEnded: boolean
 
-    startTime: number
-
+    //keeps a catalog of the letters typed and if they were correct or not
     correct: boolean[]
 
     /**
@@ -43,7 +42,7 @@ import React from "react"
      * @param charactersPerLine 
      * @param displayLines (> 0 and odd)
      */
-    constructor(testString: string, charactersPerLine: number, displayLines: number) {
+    constructor(testString: string[], charactersPerLine: number, displayLines: number) {
 
         //valid size?
         if (!GameUtility.validDisplayRange(displayLines)) {
@@ -64,7 +63,7 @@ import React from "react"
         //hand to lineIterator
         this.lineItterator = new GameIterator(this.lines[this.focusIndex], this.lineOfFocus)
         this.testEnded = false
-        this.startTime = -1
+        //this.startTime = -1
 
         this.correct = []
     }
@@ -87,14 +86,15 @@ import React from "react"
      * This method will go to the next focus element and simulate scroll
      */
     next(input: HTMLTextAreaElement): boolean {
+        /* 
         if (this.startTime === -1) {
             this.startTime = new Date().getTime()
-        }
-        if (this.lineItterator.hasNext()) {
+        }*/
+        if (!this.testEnded && this.lineItterator.hasNext()) {
 
             this.lineItterator.next(input, this.correct)
             return true
-        } else if (this.hasNext()) {
+        } else if (!this.testEnded && this.hasNext()) {
 
             let nextJSXArray: JSX.Element[] = []
             if (this.lastLoadedIndex < this.lines.length) {
@@ -280,7 +280,7 @@ export class GameUtility {
         return false
     }
 
-    static shuffleArray(stringArr: string[]) {
+    static shuffleArray(stringArr: string[]): string[] {
         let currentIndex: number = stringArr.length, randomIndex;
 
         while (currentIndex != 0) {
@@ -291,6 +291,7 @@ export class GameUtility {
             [stringArr[currentIndex], stringArr[randomIndex]] = [
                 stringArr[randomIndex], stringArr[currentIndex]]
         }
+        return stringArr
     }
 
     /**
@@ -300,9 +301,7 @@ export class GameUtility {
      * @param limit 
      * @returns string[][] (lines)
      */
-    static getLines(string: string, limit: number): string[][] {
-
-        let words: string[] = string.split('|')
+    static getLines(words: string[], limit: number): string[][] {
 
         let lines: string[][] = []
         let line: string[] = []
