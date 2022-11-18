@@ -15,3 +15,7 @@
 .inactive-tab {
     @apply px-12 py-2 text-xl text-white hover:text-mint active:text-white;
 }
+
+html {
+    background-color: #424242;
+}
