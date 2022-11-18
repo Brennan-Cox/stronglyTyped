@@ -78,7 +78,7 @@ const SyntaxPage: NextPage = (props: any) => {
                 </div>
             </div>
             <div id="main-tabs" className="bg-stgray-100 h-screen text-center">
-                <SyntaxTab initialText={getInitialLines(props.test.text)} leaderScores={props.leaderScores} userID={props.userID} test={props.test} scores={props.scores} averageScore={props.averageScore}/>
+                <SyntaxTab unlocked={props.unlocked} initialText={getInitialLines(props.test.text)} leaderScores={props.leaderScores} userID={props.userID} test={props.test} scores={props.scores} averageScore={props.averageScore}/>
             </div>
         </main>
     )
@@ -117,8 +117,41 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             var { rows: averageScore } = await client.query('SELECT * FROM Scores WHERE user_id = $1 and test_id = $2', values)
             values = ['syntax', context.query.id]
             var { rows: leaderScores } = await client.query('SELECT * FROM Leaderboards l INNER JOIN users u ON l.user_id = u.id WHERE type = $1 and test_id = $2 ORDER BY high_accuracy desc, high_wpm desc limit 15', values)
+            values = [session.user.id]
+            var { rows: unlocks } = await client.query('SELECT test_id FROM unlocks WHERE user_id = $1', values)
             await client.end()
-            return {props: {user: session.user, test: tests[0], scores: highScores, leaderScores: leaderScores, userID: session.user.id, averageScore: averageScore}};
+
+            
+            //get challenge group
+            let challengesInAGroup = 5
+            let group: number = Math.floor((tests[0].id - 1) / challengesInAGroup)
+            //get subChallenge index
+            let idInGroup: number = (tests[0].id - 1) % challengesInAGroup
+
+            //if not the first challenge and prev is undefined
+            //meaning a prev challenge has not been completed
+            let index: number = group * challengesInAGroup + idInGroup + 1
+            let iDsUnlocked: number[] = []
+            unlocks.forEach(lock => {
+                iDsUnlocked.push(lock.test_id)
+            })
+            if (idInGroup != 0 && !iDsUnlocked.includes(index)) {
+
+                //find where prev had a score or is origin
+                while (!iDsUnlocked.includes(index) && idInGroup > 0) {
+                    index--
+                    idInGroup--
+                }
+                
+                //redirect to appropriate test
+                return {
+                    redirect: {
+                        destination: ("/syntax/" + (index))
+                    },
+                    props: {}
+                }
+            }
+            return {props: {unlocked: unlocks, user: session.user, test: tests[0], scores: highScores, leaderScores: leaderScores, userID: session.user.id, averageScore: averageScore}};
         }
         
 
@@ -130,10 +163,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         switch (e.code) {
             case 'ENOTFOUND':
                 break;
+            default:
+                console.log(e)
         }
     }
-
-    console.log(context.query)
 
     return {props: {user: session.user, scores: [], averageScore: []}};
 }
