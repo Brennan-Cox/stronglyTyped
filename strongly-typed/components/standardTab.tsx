@@ -6,9 +6,8 @@ import { GameUtility } from "./GameUtility";
 
 function StandardTab(props: any) {
 
+    //get game from props
     var standardGame: Game = props.gameInstance
-
-    //set initial state and hooks
 
     //initial state preHydration
     var [displayArr, SetElementArr] = useState(GameUtility.stringArrayToJSXArray(''.split('')))
@@ -17,6 +16,7 @@ function StandardTab(props: any) {
     //I.E no server hydration discrepency
     useEffect(() => SetElementArr(GameUtility.toSingleJSXArray(standardGame.linesToDisplay)), [])
 
+    //related to the statistics display section
     var [displayResults, SetDisplayResults] = useState(false)
     var [wpm, SetWpm] = useState('')
     var [accuracy, SetAccuracy] = useState('')
@@ -28,6 +28,7 @@ function StandardTab(props: any) {
     var timerStarted: boolean = false
     var [timerDisplay, setTimer] = useState(allowedTime)
 
+    //the tutoial recommendation button
     var [showTutorialRecommendation, SetRecommend] = useState(false)
     var [tutorialTabNumber, SetTutorialTabNum] = useState(1)
 
@@ -47,7 +48,7 @@ function StandardTab(props: any) {
             SetElementArr(GameUtility.toSingleJSXArray(standardGame.linesToDisplay))
         } else {
             if (!standardGame.testEnded) {
-                endDrill(standardGame, allowedTime)
+                endDrill(standardGame, allowedTime - timerDisplay)
             }
         }
     }
@@ -113,7 +114,6 @@ function StandardTab(props: any) {
         updateHighScore(props.userID, props.test.id, wpm, accuracy)
         //setAverageScore() from database, may be able to pull and store in page on load
         //check if high score needs updating
-
 
         SetDisplayResults(true)
         recommendTutorial()
@@ -250,16 +250,13 @@ function StandardTab(props: any) {
      */
     function LeaderRow(index: any): JSX.Element {
         var index = index.index
-        if (props.leaderScores.at(index) != undefined) {
+        if (props.leaderScores.at(index) != undefined && props.leaderScores.at(index).high_wpm != 0) {
             return (<tr className="border-b border-white">
                 <td>{props.leaderScores.at(index).username}</td>
                 <td>{props.leaderScores.at(index).high_wpm} WPM / {props.leaderScores.at(index).high_accuracy}%</td>
             </tr>)
         } else {
-            return (<tr className="border-b border-white">
-                <td>-----</td>
-                <td>0 WPM / 0% Acc</td>
-            </tr>)
+            return (<tr className="hidden"></tr>)
         }
     }
 

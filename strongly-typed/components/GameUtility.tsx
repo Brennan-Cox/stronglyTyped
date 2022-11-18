@@ -259,7 +259,7 @@ export class GameUtility {
             let element: JSX.Element
             if (character == '_') {
 
-                element = <br/>
+                element = <br key={this.elementIDs++}/>
             } else {
                 element = <span className="text-white" key={this.elementIDs++}>{character}</span>
             }

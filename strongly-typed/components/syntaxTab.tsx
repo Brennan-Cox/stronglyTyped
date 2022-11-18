@@ -195,8 +195,6 @@ function SyntaxTab(props: any) {
         elementIDs = 0
         SetDisplayResults(false)
 
-        console.log(charIndex)
-
         //set each JSX element as a span with a single character of white text
         characters.forEach((line) => {
             let jsxLine: JSX.Element[] = []
@@ -275,6 +273,7 @@ function SyntaxTab(props: any) {
 
         updateAverageScore(props.userID, props.test.id, wpm, accuracy)
         updateHighScore(props.userID, props.test.id, wpm, accuracy)
+        unlockNextChallenge(props.userID, props.test.id, wpm, accuracy)
 
         SetDisplayResults(true)
         recommendTutorial()
@@ -328,20 +327,75 @@ function SyntaxTab(props: any) {
         }
     }
 
-    /** 
-     * Checks to see if there is a value at the given index and returns
-     * an element with the users score values. If not it returns placeholder data
-     * 
-     * @param index 
-     * @returns JSX.Element
-     */
-    function ScoreRow(index: any): JSX.Element {
-        var index = index.index
-        if (props.scores.at(index) != undefined) {
-            return (<td>{props.scores.at(index).high_wpm} WPM / {props.scores.at(index).high_accuracy}% Acc</td>)
-        } else {
-            return (<td>0 WPM / 0% Acc</td>)
+    async function unlockNextChallenge(userID: number, testID: number, wpm: number, accuracy: number) {
+
+        var response: Response = await fetch('/api/unlockNextChallenge', {
+            method: "PUT",
+            body: JSON.stringify({ user_id: userID, test_id: testID, wpm: wpm.toFixed(2), accuracy: accuracy.toFixed(2) }),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+
+        if (response.ok) {
+            var results = await response.json()
+            var didUnlockNext = results.didUnlock
+            if (didUnlockNext) {
+                //show next test
+            }
+            // Can display a message to the user saying they beat their highscore
         }
+    }
+
+    /**
+     * Will return a score row if the score row should be there
+     * @param attributes 
+     * @returns 
+     */
+    function ScoreRow(attributes: any): JSX.Element {
+
+        //get the challenge string and the index passed in
+        var challenge = attributes.challenge
+        var index = attributes.index
+
+        console.log(props.unlocked)
+        let contains: boolean = false
+        props.unlocked.forEach((lock: any) => {
+            if (lock.test_id == index + 1) {
+                contains = true
+            }
+        })
+
+        if (contains) {
+            return <tr className="border-b border-white px-3">
+                <td className="py-3 hover:text-mint"><a href={"/syntax/" + (index + 1)}>{challenge}</a></td>
+                <td>{props.scores.at(index).high_wpm} WPM / {props.scores.at(index).high_accuracy}% Acc</td>
+            </tr>
+        } else {
+            return <tr className="hidden"></tr>
+        }
+
+        /*
+        if (incompleteAt && atStart) {
+            return (<tr className="border-b border-white px-3">
+                <td className="py-3 hover:text-mint"><a href={"/syntax/" + (index + 1)}>{challenge}</a></td>
+                <td>0 WPM / 0% Acc</td>
+            </tr>)
+        }
+        if (incompleteAt && !incompletePrev) {
+            return (<tr className="border-b border-white px-3">
+                <td className="py-3 hover:text-mint"><a href={"/syntax/" + (index + 1)}>{challenge}</a></td>
+                <td>0 WPM / 0% Acc</td>
+            </tr>)
+        }
+        if (!incompleteAt) {
+            return <tr className="border-b border-white px-3">
+                <td className="py-3 hover:text-mint"><a href={"/syntax/" + (index + 1)}>{challenge}</a></td>
+                <td>{props.scores.at(index).high_wpm} WPM / {props.scores.at(index).high_accuracy}% Acc</td>
+            </tr>
+        }
+        return <tr className="hidden"></tr>
+        */
     }
 
     /** 
@@ -353,16 +407,14 @@ function SyntaxTab(props: any) {
      */
     function LeaderRow(index: any): JSX.Element {
         var index = index.index
-        if (props.leaderScores.at(index) != undefined) {
+        const lBoard: any = props.leaderScores.at(index)
+        if (lBoard != undefined && lBoard.high_wpm != 0) {
             return (<tr className="border-b border-white">
                 <td>{props.leaderScores.at(index).username}</td>
                 <td>{props.leaderScores.at(index).high_wpm} WPM / {props.leaderScores.at(index).high_accuracy}% Acc</td>
             </tr>)
         } else {
-            return (<tr className="border-b border-white">
-                <td>-----</td>
-                <td>0 WPM / 0% Acc</td>
-            </tr>)
+            return (<tr className="hidden"></tr>)
         }
     }
 
@@ -435,26 +487,11 @@ function SyntaxTab(props: any) {
                         </tr>
                     </thead>
                     <tbody className="text-white text-2xl">
-                        <tr className="border-b border-white px-3">
-                            <td className="py-3 hover:text-mint"><a href="/syntax/1">Java 1</a></td>
-                            <ScoreRow index={0} />
-                        </tr>
-                        <tr className="border-b border-white px-3">
-                            <td className="py-3 hover:text-mint"><a href="/syntax/2">Java 2</a></td>
-                            <ScoreRow index={1} />
-                        </tr>
-                        <tr className="border-b border-white px-3">
-                            <td className="py-3 hover:text-mint"><a href="/syntax/3">Java 3</a></td>
-                            <ScoreRow index={2} />
-                        </tr>
-                        <tr className="border-b border-white px-3">
-                            <td className="py-3 hover:text-mint"><a href="/syntax/4">Java 4</a></td>
-                            <ScoreRow index={3} />
-                        </tr>
-                        <tr className="border-b border-white px-3">
-                            <td className="py-3 hover:text-mint"><a href="/syntax/5">Java 5</a></td>
-                            <ScoreRow index={4} />
-                        </tr>
+                        <ScoreRow index={0} challenge={"Java 1"}/>
+                        <ScoreRow index={1} challenge={"Java 2"}/>
+                        <ScoreRow index={2} challenge={"Java 3"}/>
+                        <ScoreRow index={3} challenge={"Java 4"}/>
+                        <ScoreRow index={4} challenge={"Java 5"}/>
                     </tbody>
                     <thead className="text-mint">
                         <tr className="border-b border-t border-white text-3xl">
@@ -463,26 +500,11 @@ function SyntaxTab(props: any) {
                         </tr>
                     </thead>
                     <tbody className="text-white text-2xl">
-                        <tr className="border-b border-white px-3">
-                            <td className="py-3 hover:text-mint"><a href="/syntax/6">Python 1</a></td>
-                            <ScoreRow index={5} />
-                        </tr>
-                        <tr className="border-b border-white px-3">
-                            <td className="py-3 hover:text-mint"><a href="/syntax/7">Python 2</a></td>
-                            <ScoreRow index={6} />
-                        </tr>
-                        <tr className="border-b border-white px-3">
-                            <td className="py-3 hover:text-mint"><a href="/syntax/8">Python 3</a></td>
-                            <ScoreRow index={7} />
-                        </tr>
-                        <tr className="border-b border-white px-3">
-                            <td className="py-3 hover:text-mint"><a href="/syntax/9">Python 4</a></td>
-                            <ScoreRow index={8} />
-                        </tr>
-                        <tr className="border-b border-white px-3">
-                            <td className="py-3 hover:text-mint"><a href="/syntax/10">Python 5</a></td>
-                            <ScoreRow index={9} />
-                        </tr>
+                        <ScoreRow index={5} challenge={"Python 1"}/>
+                        <ScoreRow index={6} challenge={"Python 2"}/>
+                        <ScoreRow index={7} challenge={"Python 3"}/>
+                        <ScoreRow index={8} challenge={"Python 4"}/>
+                        <ScoreRow index={9} challenge={"Python 5"}/>
                     </tbody>
                     <thead className="text-mint">
                         <tr className="border-b border-t border-white text-3xl">
@@ -491,26 +513,11 @@ function SyntaxTab(props: any) {
                         </tr>
                     </thead>
                     <tbody className="text-white text-2xl">
-                        <tr className="border-b border-white px-3">
-                            <td className="py-3 hover:text-mint"><a href="/syntax/11">C++ 1</a></td>
-                            <ScoreRow index={10} />
-                        </tr>
-                        <tr className="border-b border-white px-3">
-                            <td className="py-3 hover:text-mint"><a href="/syntax/12">C++ 2</a></td>
-                            <ScoreRow index={11} />
-                        </tr>
-                        <tr className="border-b border-white px-3">
-                            <td className="py-3 hover:text-mint"><a href="/syntax/13">C++ 3</a></td>
-                            <ScoreRow index={12} />
-                        </tr>
-                        <tr className="border-b border-white px-3">
-                            <td className="py-3 hover:text-mint"><a href="/syntax/14">C++ 4</a></td>
-                            <ScoreRow index={13} />
-                        </tr>
-                        <tr className="border-b border-white px-3">
-                            <td className="py-3 hover:text-mint"><a href="/syntax/15">C++ 5</a></td>
-                            <ScoreRow index={14} />
-                        </tr>
+                        <ScoreRow index={10} challenge={"C++ 1"}/>
+                        <ScoreRow index={11} challenge={"C++ 2"}/>
+                        <ScoreRow index={12} challenge={"C++ 3"}/>
+                        <ScoreRow index={13} challenge={"C++ 4"}/>
+                        <ScoreRow index={14} challenge={"C++ 5"}/>
                     </tbody>
                 </table>
             </div>
@@ -536,6 +543,7 @@ function SyntaxTab(props: any) {
                         <br />
                         <button className="text-white bg-stgray-200 rounded-md mt-5 pr-2 pl-2"><a href={"/tutorials/" + tutorialTabNumber}>Recommended Tutorial</a></button>
                     </div>
+                    <img src="http://i.stack.imgur.com/SBv4T.gif" alt="this slowpoke moves"  width="250" />
                 </div>
             </div>
             <div className="py-20 px-5">
