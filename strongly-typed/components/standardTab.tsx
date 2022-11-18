@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import React from 'react';
 import { Game } from "./GameUtility";
 import { GameUtility } from "./GameUtility";
+import Image from 'next/image';
+
 
 
 function StandardTab(props: any) {
@@ -38,7 +40,7 @@ function StandardTab(props: any) {
      * all else it will end the game and log the time
      * @param input 
      */
-     function callNext(input: HTMLTextAreaElement) {
+    function callNext(input: HTMLTextAreaElement) {
         if (!timerStarted) {
             startTimer()
             timerStarted = true
@@ -264,95 +266,110 @@ function StandardTab(props: any) {
     }
 
     return (
-        <div className="flex justify-between">
-            <div className="py-20 px-5">
-                <table className=" border-l border-r bg-stgray-200">
-                    <thead className="text-mint">
-                        <tr className="border-b border-t border-white text-3xl">
-                            <th className="px-4 py-2">Game Mode</th>
-                            <th className="px-4 py-2">High Score</th>
-                        </tr>
-                    </thead>
-                    <tbody className="text-white text-2xl">
-                        <tr className="border-b border-white px-3">
-                            <td className="py-4 hover:text-mint"><a href="/standard/1">Standard</a></td>
-                            <ScoreRow index={0} />
-                        </tr>
-                        <tr className="border-b border-white px-3">
-                            <td className="py-4 hover:text-mint"><a href="/standard/2">Difficult</a></td>
-                            <ScoreRow index={1} />
-                        </tr>
-                        <tr className="border-b border-white px-3">
-                            <td className="py-4 hover:text-mint"><a href="/standard/3">Symbols</a></td>
-                            <ScoreRow index={2} />
-                        </tr>
-                        <tr className="border-b border-white px-3">
-                            <td className="py-4 hover:text-mint"><a href="/standard/4">Endurance</a></td>
-                            <ScoreRow index={3} />
-                        </tr>
-                        <tr className="border-b border-white px-3">
-                            <td className="py-4 hover:text-mint"><a href="/standard/5">Hardcore</a></td>
-                            <ScoreRow index={4} />
-                        </tr>
-                    </tbody>
-                </table>
+        <div>
+
+            {/* Trying to get an image displayed here with text that we can put on top of it. This will serve as the
+             instructions for the confused or overwhelmed user */}
+
+            <div className="w-full relative mt-4">
+                <div className="w-full h-full flex flex-col absolute top-0 left-0 justify-center items-center z-10">
+                    <div className="text-white text-3xl">To begin, click on an exercise from the menu on the left!</div>
+                </div>
+                <Image src="/message-box.png" alt="" width={846} height={159} />
             </div>
-            <div className="flex justify-center mt-20 bg-mint rounded-3xl w-1/3">
-                <div className="text-lg">
-                    <h2 className="text-3xl font-bold pt-10">{props.test.name}</h2>
-                    <br />
-                    <div>{displayArr}</div>
-                    <br />
-                    <textarea onKeyDown={e => callPrev(e.key)} onChange={(e) => callNext(e.target)} className="text-white bg-stgray-200 resize-none rounded-xl w-80 h-7" placeholder="Click here and start typing to begin!"></textarea>
-                    <br />
-                    <button className="text-white bg-stgray-200 rounded-md mt-5 pr-2 pl-2"><a href={"/standard/" + props.test.id}>Reset Test</a></button>
-                    <h3 className="text-xl font-bold pt-10">Timer</h3>
-                    <div className="text-white text-3xl">{timerDisplay}</div>
-                    <img src="http://i.stack.imgur.com/SBv4T.gif" alt="this slowpoke moves"  width="250" />
-                    <br />
-                    <div className={displayResults ? "block" : "hidden"}>
+
+
+
+            <div className="flex justify-between">
+                <div className="py-20 px-5">
+                    <table className=" border-l border-r bg-stgray-200">
+                        <thead className="text-mint">
+                            <tr className="border-b border-t border-white text-3xl">
+                                <th className="px-4 py-2">Game Mode</th>
+                                <th className="px-4 py-2">High Score</th>
+                            </tr>
+                        </thead>
+                        <tbody className="text-white text-2xl">
+                            <tr className="border-b border-white px-3">
+                                <td className="py-4 hover:text-mint"><a href="/standard/1">Standard</a></td>
+                                <ScoreRow index={0} />
+                            </tr>
+                            <tr className="border-b border-white px-3">
+                                <td className="py-4 hover:text-mint"><a href="/standard/2">Difficult</a></td>
+                                <ScoreRow index={1} />
+                            </tr>
+                            <tr className="border-b border-white px-3">
+                                <td className="py-4 hover:text-mint"><a href="/standard/3">Symbols</a></td>
+                                <ScoreRow index={2} />
+                            </tr>
+                            <tr className="border-b border-white px-3">
+                                <td className="py-4 hover:text-mint"><a href="/standard/4">Endurance</a></td>
+                                <ScoreRow index={3} />
+                            </tr>
+                            <tr className="border-b border-white px-3">
+                                <td className="py-4 hover:text-mint"><a href="/standard/5">Hardcore</a></td>
+                                <ScoreRow index={4} />
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div className="flex justify-center mt-20 bg-mint rounded-3xl w-1/3">
+                    <div className="text-lg">
+                        <h2 className="text-3xl font-bold pt-10">{props.test.name}</h2>
                         <br />
-                        <h3 className="text-xl font-bold">Drill Complete!</h3>
-                        <p>Words Per Minute: {wpm}</p>
-                        <p>Accuracy: {accuracy}%</p>
-                        <h4 className="text-xl font-bold">Average Performance:</h4>
-                        <p>WPM: {averageWpm} Accuracy: {averageAcc}%</p>
-                    </div>
-                    <div className={showTutorialRecommendation ? "block" : "hidden"}>
+                        <div>{displayArr}</div>
                         <br />
-                        <button className="text-white bg-stgray-200 rounded-md mt-5 pr-2 pl-2"><a href={"/tutorials/" + tutorialTabNumber}>Recommended Tutorial</a></button>
+                        <textarea onKeyDown={e => callPrev(e.key)} onChange={(e) => callNext(e.target)} className="text-white bg-stgray-200 resize-none rounded-xl w-80 h-7" placeholder="Click here and start typing to begin!"></textarea>
+                        <br />
+                        <button className="text-white bg-stgray-200 rounded-md mt-5 pr-2 pl-2"><a href={"/standard/" + props.test.id}>Reset Test</a></button>
+                        <h3 className="text-xl font-bold pt-10">Timer</h3>
+                        <div className="text-white text-3xl">{timerDisplay}</div>
+                        <img src="http://i.stack.imgur.com/SBv4T.gif" alt="this slowpoke moves" width="250" />
+                        <br />
+                        <div className={displayResults ? "block" : "hidden"}>
+                            <br />
+                            <h3 className="text-xl font-bold">Drill Complete!</h3>
+                            <p>Words Per Minute: {wpm}</p>
+                            <p>Accuracy: {accuracy}%</p>
+                            <h4 className="text-xl font-bold">Average Performance:</h4>
+                            <p>WPM: {averageWpm} Accuracy: {averageAcc}%</p>
+                        </div>
+                        <div className={showTutorialRecommendation ? "block" : "hidden"}>
+                            <br />
+                            <button className="text-white bg-stgray-200 rounded-md mt-5 pr-2 pl-2"><a href={"/tutorials/" + tutorialTabNumber}>Recommended Tutorial</a></button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div className="py-20 px-5">
-                <table className=" border-l border-r bg-stgray-200">
-                    <thead className="text-mint">
-                        <tr className="border-b border-t border-white text-3xl">
-                            <th className="py-2">Leaderboard</th>
-                        </tr>
-                        <tr className="border-b border-white text-2xl">
-                            <th className="px-4 py-2">UserName</th>
-                            <th className="px-4 py-2">High Score</th>
-                        </tr>
-                    </thead>
-                    <tbody className="text-white text-2xl">
-                        <LeaderRow index={0} />
-                        <LeaderRow index={1} />
-                        <LeaderRow index={2} />
-                        <LeaderRow index={3} />
-                        <LeaderRow index={4} />
-                        <LeaderRow index={5} />
-                        <LeaderRow index={6} />
-                        <LeaderRow index={7} />
-                        <LeaderRow index={8} />
-                        <LeaderRow index={9} />
-                        <LeaderRow index={10} />
-                        <LeaderRow index={11} />
-                        <LeaderRow index={12} />
-                        <LeaderRow index={13} />
-                        <LeaderRow index={14} />
-                    </tbody>
-                </table>
+                <div className="py-20 px-5">
+                    <table className=" border-l border-r bg-stgray-200">
+                        <thead className="text-mint">
+                            <tr className="border-b border-t border-white text-3xl">
+                                <th className="py-2">Leaderboard</th>
+                            </tr>
+                            <tr className="border-b border-white text-2xl">
+                                <th className="px-4 py-2">UserName</th>
+                                <th className="px-4 py-2">High Score</th>
+                            </tr>
+                        </thead>
+                        <tbody className="text-white text-2xl">
+                            <LeaderRow index={0} />
+                            <LeaderRow index={1} />
+                            <LeaderRow index={2} />
+                            <LeaderRow index={3} />
+                            <LeaderRow index={4} />
+                            <LeaderRow index={5} />
+                            <LeaderRow index={6} />
+                            <LeaderRow index={7} />
+                            <LeaderRow index={8} />
+                            <LeaderRow index={9} />
+                            <LeaderRow index={10} />
+                            <LeaderRow index={11} />
+                            <LeaderRow index={12} />
+                            <LeaderRow index={13} />
+                            <LeaderRow index={14} />
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     )
