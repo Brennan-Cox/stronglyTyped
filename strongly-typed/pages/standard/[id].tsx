@@ -103,6 +103,8 @@ const StandardPage: NextPage = (props: any) => {
         switch (e.code) {
             case 'ENOTFOUND':
                 break;
+            default:
+                console.log(e)
         }
     }
 
