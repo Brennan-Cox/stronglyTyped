@@ -478,6 +478,7 @@ function SyntaxTab(props: any) {
 
     return (
         <div className="flex justify-between">
+
             <div className="py-20  px-5">
                 <table className=" border-l border-r bg-stgray-200">
                     <thead className="text-mint">
