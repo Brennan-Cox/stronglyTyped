@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState, FormEvent } from 'react'
 import { signIn, getSession, signOut, getCsrfToken } from 'next-auth/react'
 import { Session } from 'next-auth';
+import { SERVER_PROPS_ID } from 'next/dist/shared/lib/constants';
 
 
 /**
@@ -13,17 +14,15 @@ import { Session } from 'next-auth';
  * two event handle functions will call
  * @returns void
  */
-const AccountOptions: NextPage = () => {
+const AccountOptions: NextPage = (props: any) => {
 
     /*
     This section contains the variables that either handler will use
     */
-    var [currentUser, setUserName] = useState('')
-    getUsername()
-    var [newUser, setNewUsername] = useState('')
+    var [newUsername, setNewUsername] = useState('')
     var [currentPassword, setCurrentPassword] = useState('')
     var [newPassword, setNewPassword] = useState('')
-    var [confirmNewPassword, confirmPassword] = useState('')
+    var [confirmNewPassword, setConfirmPassword] = useState('')
     var [error, setError] = useState('')
     var [success, setSuccess] = useState('')
 
@@ -43,7 +42,7 @@ const AccountOptions: NextPage = () => {
         // change the user password of a user in the database
         var results: Response = await fetch('/api/changePass', {
             method: "POST",
-            body: JSON.stringify({ currentUser: currentUser, currentPassword: currentPassword, newPassword: newPassword, confirmNewPassword: confirmNewPassword }),
+            body: JSON.stringify({ currentUser: props.username, currentPassword: currentPassword, newPassword: newPassword, confirmNewPassword: confirmNewPassword }),
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -56,15 +55,20 @@ const AccountOptions: NextPage = () => {
         if (results.ok) {
 
             // Display the success message and update session
-            await signIn('credentials', { username: currentUser, password: newPassword, redirect: false })
+            await signIn('credentials', { username: props.username, password: newPassword, redirect: false })
             setSuccess("Password Updated Successfully")
+            setError("")
+            setNewPassword("")
+            setConfirmPassword("")
         } else {
 
             // Display the error message
             var errorResponse = await results.json()
             setError(errorResponse.error)
+            setSuccess("")
         }
         togglePopup("")
+        setCurrentPassword("")
     }
 
     /**
@@ -81,25 +85,26 @@ const AccountOptions: NextPage = () => {
         // change the username where a valid password is given
         var results: Response = await fetch('/api/changeUser', {
             method: "POST",
-            body: JSON.stringify({ currentUser: currentUser, newUser: newUser, currentPassword: currentPassword }),
+            body: JSON.stringify({ currentUser: props.username, newUser: newUsername, currentPassword: currentPassword }),
             headers: {
                 'Content-Type': 'application/json'
             },
         })
 
-        //update currentUser variable to signin
-        currentUser = newUser;
-
         // Check if the request was successful
         if (results.ok) {
             // Success message and session update
-            await signIn('credentials', { username: newUser, password: currentPassword, redirect: false })
+            await signIn('credentials', { username: newUsername, password: currentPassword, redirect: false })
             setSuccess("Username Updated Successfully")
+            setError("")
+            setNewUsername("")
         } else {
             // Error message set
             var errorResponse = await results.json()
             setError(errorResponse.error)
+            setSuccess("")
         }
+        setCurrentPassword("")
         togglePopup("")
     }
 
@@ -128,18 +133,6 @@ const AccountOptions: NextPage = () => {
             return (<p className='text-green-400 text-center'>{success}</p>)
         }
         return (<p></p>)
-    }
-
-    /**
-     * async function that allows update of the currentUser
-     * This function should only be used where the session does not need to be
-     * updated through additional sign ins
-     */
-    async function getUsername() {
-        const session = await getSession()
-        if (session) {
-            setUserName(session?.user.username);
-        }
     }
 
     // This is for the popup
@@ -175,7 +168,7 @@ const AccountOptions: NextPage = () => {
                     <h4 className="text-white text-2xl">Input password</h4>
                 </div>
                 <div className="flex ml-4 justify-center mt-3">
-                    <input type="password" onChange={(e) => setCurrentPassword(e.target.value)} className="text-center h-8 w-64" />
+                    <input type="password" onChange={(e) => setCurrentPassword(e.target.value)} className="text-center h-8 w-64" value={currentPassword} />
                     <button type="submit" onClick={() => updatePushed()} className="text-mint text-center py-1 font-semibold border-2 border-mint hover:bg-stgray-100 w-40 mr-10 ml-auto">Update</button>
                 </div>
             </div>
@@ -206,7 +199,7 @@ const AccountOptions: NextPage = () => {
                     {/*Form intended to update the username */}
                     <form id="updateUser" onSubmit={(e) => { e.preventDefault() }}>
                         <h1 className="ml-6 mt-3 mb-2 text-white">New Username</h1>
-                        <input onChange={(e) => setNewUsername(e.target.value)} type="text" id="username" name="username" className="w-96 ml-6 rounded-sm mb-6" />
+                        <input onChange={(e) => setNewUsername(e.target.value)} type="text" id="username" name="username" className="w-96 ml-6 rounded-sm mb-6" value={newUsername} maxLength={16}/>
                         <div className="ml-6">
                             <button type="submit" onClick={() => togglePopup("username")} className="text-mint text-center py-1 font-semibold border-2 border-mint hover:bg-stgray-100 w-40 mr-10 ml-auto">Update Username</button>
                         </div>
@@ -214,9 +207,9 @@ const AccountOptions: NextPage = () => {
                     {/*Form intended to update the password */}
                     <form id="updatePassword" onSubmit={(e) => { e.preventDefault() }}>
                         <h1 className="ml-6 mt-3 pb-2 text-white">New Password</h1>
-                        <input onChange={(e) => setNewPassword(e.target.value)} type="password" id="confirm_password" name="confirm_password" className="w-96 ml-6 rounded-sm mb-6" required />
+                        <input onChange={(e) => setNewPassword(e.target.value)} type="password" id="confirm_password" name="confirm_password" className="w-96 ml-6 rounded-sm mb-6" required value={newPassword}/>
                         <h1 className="ml-6 mt-3 pb-2 text-white">Confirm New Password</h1>
-                        <input onChange={(e) => confirmPassword(e.target.value)} type="password" id="confirm_password" name="confirm_password" className="w-96 ml-6 rounded-sm mb-6" required />
+                        <input onChange={(e) => setConfirmPassword(e.target.value)} type="password" id="confirm_password" name="confirm_password" className="w-96 ml-6 rounded-sm mb-6" required value={confirmNewPassword}/>
                         <div className="pb-4 ml-6">
                             <button type="submit" onClick={() => togglePopup("password")} className="text-mint text-center py-1 font-semibold border-2 border-mint hover:bg-stgray-100 w-40 mr-10">Update Password</button>
                         </div>
@@ -245,7 +238,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
     }
 
-    return { props: {} };
+    return { props: {username: session.user.username} };
 }
 
 export default AccountOptions;
