@@ -276,10 +276,12 @@ function StandardTab(props: any) {
              instructions for the confused or overwhelmed user */}
 
             <div className="w-full relative mt-4">
-                <Image className="z-0" src="/message-box.png" alt="" width={846} height={159} />
-                <div className="w-full h-full flex flex-col absolute top-0 left-0 justify-center items-center">
-                    <div className="text-white text-3xl">To begin, click on an exercise from the menu on the left!</div>
+                <div className="w-full h-full flex flex-col absolute top-0 left-0 justify-center items-center z-10">
+                    <div className="text-white text-2xl">Select a mode from the menu on the left.</div>
+                    <div className="text-white text-2xl">Type the text on the screen as fast as you can before time runs out!</div>
+                    <div className="text-white text-2xl">Correct letters will highlight green, incorrect will highlight red.</div>
                 </div>
+                <Image src="/message-box.png" alt="" width={846} height={159} />
             </div>
 
             <div className="flex justify-between">
