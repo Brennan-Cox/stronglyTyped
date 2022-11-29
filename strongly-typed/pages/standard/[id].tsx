@@ -52,7 +52,7 @@ const StandardPage: NextPage = (props: any) => {
                 </div>
             </div>
             <div id="main-tabs" className="bg-stgray-100 h-screen text-center">
-                <StandardTab gameInstance = {new Game(GameUtility.shuffleArray(props.test.text.split('|')), 20, 7)} userID={props.userID} test={props.test} scores={props.scores} averageScore={props.averageScore} leaderScores={props.leaderScores}/>
+                <StandardTab gameInstance = {new Game(GameUtility.shuffleArray(props.test.text.split('|')), 50, 3)} userID={props.userID} test={props.test} scores={props.scores} averageScore={props.averageScore} leaderScores={props.leaderScores}/>
             </div>
         </main>
     )

@@ -296,6 +296,14 @@ export class GameUtility {
     }
 
     static shuffleArray(stringArr: string[]): string[] {
+        
+        for (let j = 0; j < 2; j++) {
+            let length = stringArr.length
+            for (let i = 0; i < length; i++) {
+                stringArr.push(stringArr[i])
+            }
+        }
+
         let currentIndex: number = stringArr.length, randomIndex;
 
         while (currentIndex != 0) {
