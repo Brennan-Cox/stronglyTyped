@@ -26,7 +26,7 @@ function StandardTab(props: any) {
     var [averageAcc, SetAvgAccuracy] = useState('')
 
     //how much time should be allowed?
-    var allowedTime: number = 60;
+    var allowedTime: number = props.test.id == 4 ? 300:60;
     var timerStarted: boolean = false
     var [timerDisplay, setTimer] = useState(allowedTime)
 
@@ -61,7 +61,7 @@ function StandardTab(props: any) {
      */
     function startTimer() {
         let interval = setInterval(() => {
-            if (timerDisplay > 0) {
+            if (timerDisplay > 0 && !standardGame.testEnded) {
                 timerDisplay--
                 setTimer(timerDisplay)
             } else {
@@ -78,7 +78,7 @@ function StandardTab(props: any) {
      * @param key 
      */
     function callPrev(key: string) {
-        if (key === 'Backspace') {
+        if (key === 'Backspace' && props.test.id != 5) {
             standardGame.callPrev()
             SetElementArr(GameUtility.toSingleJSXArray(standardGame.linesToDisplay))
         }
@@ -269,13 +269,11 @@ function StandardTab(props: any) {
              instructions for the confused or overwhelmed user */}
 
             <div className="w-full relative mt-4">
-                <div className="w-full h-full flex flex-col absolute top-0 left-0 justify-center items-center z-10">
+                <Image className="z-0" src="/message-box.png" alt="" width={846} height={159} />
+                <div className="w-full h-full flex flex-col absolute top-0 left-0 justify-center items-center">
                     <div className="text-white text-3xl">To begin, click on an exercise from the menu on the left!</div>
                 </div>
-                <Image src="/message-box.png" alt="" width={846} height={159} />
             </div>
-
-
 
             <div className="flex justify-between">
                 <div className="py-20 px-5">
