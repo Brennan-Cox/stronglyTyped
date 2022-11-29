@@ -262,6 +262,13 @@ function StandardTab(props: any) {
         }
     }
 
+    let testName: JSX.Element[] = []
+    let parts: string[] = props.test.name.split('|')
+    testName.push(<div>{parts[0]}</div>)
+    if (parts.length > 1) {
+        testName.push(<p className="text-lg">{parts[1]}</p>)
+    }
+
     return (
         <div>
 
@@ -312,7 +319,7 @@ function StandardTab(props: any) {
                 </div>
                 <div className="flex justify-center mt-20 bg-mint rounded-3xl w-1/3">
                     <div className="text-lg">
-                        <h2 className="text-3xl font-bold pt-10">{props.test.name}</h2>
+                        <h2 className="text-3xl font-bold pt-10">{testName}</h2>
                         <br />
                         <div>{displayArr}</div>
                         <br />
