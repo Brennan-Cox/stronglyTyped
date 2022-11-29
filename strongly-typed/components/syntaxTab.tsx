@@ -1,5 +1,6 @@
 import { useState } from "react";
 import React from 'react';
+import Image from 'next/image';
 
 /**
  * create element array characters elements and booleans and a respective index
@@ -65,6 +66,22 @@ function SyntaxTab(props: any) {
         firstCharIndex = 0
         while (characters[lineIndex][firstCharIndex] === ' ') {
             firstCharIndex++
+            if (firstCharIndex == characters[lineIndex].length) {
+                lineIndex++
+                firstCharIndex = 0
+            }
+            else if (characters[lineIndex][firstCharIndex] === '}' && firstCharIndex == characters[lineIndex].length - 1) {
+                charIndex = firstCharIndex
+                updateJSXElement(true)
+                lineIndex++
+                firstCharIndex = 0
+            }
+        }
+
+        if (lineIndex == characters.length - 1 && characters[lineIndex][0] == '}') {
+            charIndex = 0
+            updateJSXElement(true)
+            endDrill()
         }
     }
 
@@ -88,10 +105,13 @@ function SyntaxTab(props: any) {
             if (charIndex > firstCharIndex) {
                 charIndex--
             }
-            else { //handles returning to previous line
+            else { //handles returning to previous line(s)
                 lineIndex--
                 charIndex = characters[lineIndex].length - 1
-                setFirstCharIndex()
+                while (characters[lineIndex][charIndex] === ' ' || characters[lineIndex][charIndex] === '}') {
+                    lineIndex--
+                    charIndex = characters[lineIndex].length - 1
+                }
             }
             charsTyped--
             correct.pop()
@@ -107,8 +127,10 @@ function SyntaxTab(props: any) {
                 setFirstCharIndex()
                 charIndex = firstCharIndex
 
-                updateCursor()
-
+                if (!testEnded) {
+                    updateCursor()
+                }
+                
                 //update the element array
                 updateElementArray()
             }
@@ -358,7 +380,6 @@ function SyntaxTab(props: any) {
         var challenge = attributes.challenge
         var index = attributes.index
 
-        console.log(props.unlocked)
         let contains: boolean = false
         props.unlocked.forEach((lock: any) => {
             if (lock.test_id == index + 1) {
@@ -374,28 +395,6 @@ function SyntaxTab(props: any) {
         } else {
             return <tr className="hidden"></tr>
         }
-
-        /*
-        if (incompleteAt && atStart) {
-            return (<tr className="border-b border-white px-3">
-                <td className="py-3 hover:text-mint"><a href={"/syntax/" + (index + 1)}>{challenge}</a></td>
-                <td>0 WPM / 0% Acc</td>
-            </tr>)
-        }
-        if (incompleteAt && !incompletePrev) {
-            return (<tr className="border-b border-white px-3">
-                <td className="py-3 hover:text-mint"><a href={"/syntax/" + (index + 1)}>{challenge}</a></td>
-                <td>0 WPM / 0% Acc</td>
-            </tr>)
-        }
-        if (!incompleteAt) {
-            return <tr className="border-b border-white px-3">
-                <td className="py-3 hover:text-mint"><a href={"/syntax/" + (index + 1)}>{challenge}</a></td>
-                <td>{props.scores.at(index).high_wpm} WPM / {props.scores.at(index).high_accuracy}% Acc</td>
-            </tr>
-        }
-        return <tr className="hidden"></tr>
-        */
     }
 
     /** 
@@ -477,105 +476,118 @@ function SyntaxTab(props: any) {
     }
 
     return (
-        <div className="flex justify-between">
+        <div>
 
-            <div className="py-20  px-5">
-                <table className=" border-l border-r bg-stgray-200">
-                    <thead className="text-mint">
-                        <tr className="border-b border-t border-white text-3xl">
-                            <th className="px-3 py-2">Java Challenges</th>
-                            <th className="px-3 py-2">High Score</th>
-                        </tr>
-                    </thead>
-                    <tbody className="text-white text-2xl">
-                        <ScoreRow index={0} challenge={"Java 1"}/>
-                        <ScoreRow index={1} challenge={"Java 2"}/>
-                        <ScoreRow index={2} challenge={"Java 3"}/>
-                        <ScoreRow index={3} challenge={"Java 4"}/>
-                        <ScoreRow index={4} challenge={"Java 5"}/>
-                    </tbody>
-                    <thead className="text-mint">
-                        <tr className="border-b border-t border-white text-3xl">
-                            <th className="px-3 py-2">Python Challenges</th>
-                            <th className="px-3 py-2"></th>
-                        </tr>
-                    </thead>
-                    <tbody className="text-white text-2xl">
-                        <ScoreRow index={5} challenge={"Python 1"}/>
-                        <ScoreRow index={6} challenge={"Python 2"}/>
-                        <ScoreRow index={7} challenge={"Python 3"}/>
-                        <ScoreRow index={8} challenge={"Python 4"}/>
-                        <ScoreRow index={9} challenge={"Python 5"}/>
-                    </tbody>
-                    <thead className="text-mint">
-                        <tr className="border-b border-t border-white text-3xl">
-                            <th className="px-3 py-2">C++ Challenges</th>
-                            <th className="px-3 py-2"></th>
-                        </tr>
-                    </thead>
-                    <tbody className="text-white text-2xl">
-                        <ScoreRow index={10} challenge={"C++ 1"}/>
-                        <ScoreRow index={11} challenge={"C++ 2"}/>
-                        <ScoreRow index={12} challenge={"C++ 3"}/>
-                        <ScoreRow index={13} challenge={"C++ 4"}/>
-                        <ScoreRow index={14} challenge={"C++ 5"}/>
-                    </tbody>
-                </table>
+            <div className="w-full relative mt-4">
+                    <div className="w-full h-full flex flex-col absolute top-0 left-0 justify-center items-center z-10">
+                        <div className="text-white text-2xl">Select a mode from the menu on the left.</div>
+                        <div className="text-white text-2xl">Type the text on the screen as fast and as accurately as you can!</div>
+                        <div className="text-white text-2xl">Correct letters will highlight green, incorrect will highlight red.</div>
+                        <div className="text-white text-2xl">You must use the ENTER key to progress to the next line.</div>
+                    </div>
+                    <Image src="/message-box.png" alt="" width={846} height={190} />
             </div>
-            <div className="flex justify-center mt-20 bg-mint rounded-3xl w-1/2">
-                <div className="text-lg">
-                    <h2 className="text-3xl font-bold pt-10">{props.test.name}</h2>
-                    <br/>
-                    <div className="text-left">{displayArr}</div>
-                    <br/>
-                    <textarea onClick={() => setInitialText()} onKeyDown={e => backspaceOrEnter(e.key)} onChange={(e) => inputCharacter(e.target)} className="text-white bg-stgray-200 resize-none rounded-xl w-80 h-7" placeholder="Click here and start typing to begin!"></textarea>
-                    <br/>
-                    <button className="text-white bg-stgray-200 rounded-md mt-5 pr-2 pl-2"><a href={"/syntax/"+props.test.id}>Reset Drill</a></button>
-                    <br/>
-                    <div className={displayResults ? "block" : "hidden"}>
-                        <br/>
-                        <h3 className = "text-xl font-bold">Drill Complete!</h3>
-                        <p>Words Per Minute: {wpm}</p>
-                        <p>Accuracy: {accuracy}%</p>
-                        <h4>Average Performance:</h4>
-                        <p>WPM: {averageWpm} Accuracy: {averageAcc}%</p>
-                    </div>
-                    <div className={showTutorialRecommendation ? "block" : "hidden"}>
-                        <br />
-                        <button className="text-white bg-stgray-200 rounded-md mt-5 pr-2 pl-2"><a href={"/tutorials/" + tutorialTabNumber}>Recommended Tutorial</a></button>
-                    </div>
-                    <img src="http://i.stack.imgur.com/SBv4T.gif" alt="this slowpoke moves"  width="250" />
+
+            <div className="flex justify-between">
+
+                <div className="py-20  px-5">
+                    <table className=" border-l border-r bg-stgray-200">
+                        <thead className="text-mint">
+                            <tr className="border-b border-t border-white text-3xl">
+                                <th className="px-3 py-2">Java Challenges</th>
+                                <th className="px-3 py-2">High Score</th>
+                            </tr>
+                        </thead>
+                        <tbody className="text-white text-2xl">
+                            <ScoreRow index={0} challenge={"Java 1"}/>
+                            <ScoreRow index={1} challenge={"Java 2"}/>
+                            <ScoreRow index={2} challenge={"Java 3"}/>
+                            <ScoreRow index={3} challenge={"Java 4"}/>
+                            <ScoreRow index={4} challenge={"Java 5"}/>
+                        </tbody>
+                        <thead className="text-mint">
+                            <tr className="border-b border-t border-white text-3xl">
+                                <th className="px-3 py-2">Python Challenges</th>
+                                <th className="px-3 py-2"></th>
+                            </tr>
+                        </thead>
+                        <tbody className="text-white text-2xl">
+                            <ScoreRow index={5} challenge={"Python 1"}/>
+                            <ScoreRow index={6} challenge={"Python 2"}/>
+                            <ScoreRow index={7} challenge={"Python 3"}/>
+                            <ScoreRow index={8} challenge={"Python 4"}/>
+                            <ScoreRow index={9} challenge={"Python 5"}/>
+                        </tbody>
+                        <thead className="text-mint">
+                            <tr className="border-b border-t border-white text-3xl">
+                                <th className="px-3 py-2">C++ Challenges</th>
+                                <th className="px-3 py-2"></th>
+                            </tr>
+                        </thead>
+                        <tbody className="text-white text-2xl">
+                            <ScoreRow index={10} challenge={"C++ 1"}/>
+                            <ScoreRow index={11} challenge={"C++ 2"}/>
+                            <ScoreRow index={12} challenge={"C++ 3"}/>
+                            <ScoreRow index={13} challenge={"C++ 4"}/>
+                            <ScoreRow index={14} challenge={"C++ 5"}/>
+                        </tbody>
+                    </table>
                 </div>
-            </div>
-            <div className="py-20 px-5">
-                <table className=" border-l border-r bg-stgray-200">
-                    <thead className="text-mint">
-                        <tr className="border-b border-t border-white text-3xl">
-                            <th className="py-2">Leaderboard</th>
-                        </tr>
-                        <tr className="border-b border-white text-2xl">
-                            <th className="px-4 py-2">UserName</th>
-                            <th className="px-4 py-2">High Score</th>
-                        </tr>
-                    </thead>
-                    <tbody className="text-white text-2xl">
-                        <LeaderRow index={0} />
-                        <LeaderRow index={1} />
-                        <LeaderRow index={2} />
-                        <LeaderRow index={3} />
-                        <LeaderRow index={4} />
-                        <LeaderRow index={5} />
-                        <LeaderRow index={6} />
-                        <LeaderRow index={7} />
-                        <LeaderRow index={8} />
-                        <LeaderRow index={9} />
-                        <LeaderRow index={10} />
-                        <LeaderRow index={11} />
-                        <LeaderRow index={12} />
-                        <LeaderRow index={13} />
-                        <LeaderRow index={14} />
-                    </tbody>
-                </table>
+                <div className="flex justify-center mt-20 bg-mint rounded-3xl w-1/2">
+                    <div className="text-lg">
+                        <h2 className="text-3xl font-bold pt-10">{props.test.name}</h2>
+                        <br/>
+                        <div className="text-left">{displayArr}</div>
+                        <br/>
+                        <textarea onClick={() => setInitialText()} onKeyDown={e => backspaceOrEnter(e.key)} onChange={(e) => inputCharacter(e.target)} className="text-white bg-stgray-200 resize-none rounded-xl w-80 h-7" placeholder="Click here and start typing to begin!"></textarea>
+                        <br/>
+                        <button className="text-white bg-stgray-200 rounded-md mt-5 pr-2 pl-2"><a href={"/syntax/"+props.test.id}>Reset Drill</a></button>
+                        <br/>
+                        <div className={displayResults ? "block" : "hidden"}>
+                            <br/>
+                            <h3 className = "text-xl font-bold">Drill Complete!</h3>
+                            <p>Words Per Minute: {wpm}</p>
+                            <p>Accuracy: {accuracy}%</p>
+                            <h4>Average Performance:</h4>
+                            <p>WPM: {averageWpm} Accuracy: {averageAcc}%</p>
+                        </div>
+                        <div className={showTutorialRecommendation ? "block" : "hidden"}>
+                            <br />
+                            <button className="text-white bg-stgray-200 rounded-md mt-5 pr-2 pl-2"><a href={"/tutorials/" + tutorialTabNumber}>Recommended Tutorial</a></button>
+                        </div>
+                        <img src="http://i.stack.imgur.com/SBv4T.gif" alt="this slowpoke moves"  width="250" />
+                    </div>
+                </div>
+                <div className="py-20 px-5">
+                    <table className=" border-l border-r bg-stgray-200">
+                        <thead className="text-mint">
+                            <tr className="border-b border-t border-white text-3xl">
+                                <th className="py-2">Leaderboard</th>
+                            </tr>
+                            <tr className="border-b border-white text-2xl">
+                                <th className="px-4 py-2">UserName</th>
+                                <th className="px-4 py-2">High Score</th>
+                            </tr>
+                        </thead>
+                        <tbody className="text-white text-2xl">
+                            <LeaderRow index={0} />
+                            <LeaderRow index={1} />
+                            <LeaderRow index={2} />
+                            <LeaderRow index={3} />
+                            <LeaderRow index={4} />
+                            <LeaderRow index={5} />
+                            <LeaderRow index={6} />
+                            <LeaderRow index={7} />
+                            <LeaderRow index={8} />
+                            <LeaderRow index={9} />
+                            <LeaderRow index={10} />
+                            <LeaderRow index={11} />
+                            <LeaderRow index={12} />
+                            <LeaderRow index={13} />
+                            <LeaderRow index={14} />
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     )
