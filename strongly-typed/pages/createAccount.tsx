@@ -83,7 +83,7 @@ const CreateAccount: NextPage = () => {
                     {/* The action attribute will depend on how this page interacts with the database */}
                     <form onSubmit={(e) => { handleSignup(e) }}>
                         <h1 className="ml-6 mt-3 mb-2 text-white">Username</h1>
-                        <input onChange={(e) => setUsername(e.target.value)} type="text" id="username" name="username" className="w-96 ml-6 rounded-sm mb-3" />
+                        <input maxLength={16} onChange={(e) => setUsername(e.target.value)} type="text" id="username" name="username" className="w-96 ml-6 rounded-sm mb-3" />
                         <h1 className="ml-6 mt-3 mb-2 text-white">Password</h1>
                         <input onChange={(e) => setPassword(e.target.value)} type="password" id="password" name="password" className="w-96 ml-6 rounded-sm mb-3" required />
                         <h1 className="ml-6 mt-3 mb-2 text-white">Re-Enter Password</h1>

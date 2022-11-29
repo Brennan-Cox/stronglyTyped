@@ -29,6 +29,10 @@ export default async function change(req: NextApiRequest, res: NextApiResponse) 
             res.status(200).end()
         } catch (e: any) {
             switch (e.code) {
+                case '23514':
+                    // invalid characters in username
+                    res.status(401).json({ error: "Username may only contain alphanumeric characters and underscores."})
+                    break;
                 case '23505':
                     // database side error code
                     res.status(400).json({ error: "Username already taken" });
