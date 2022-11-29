@@ -71,7 +71,7 @@ const SyntaxPage: NextPage = (props: any) => {
                     <button id="username" onClick={toggle} className="hover:text-mint text-white text-2xl px-12">{props.user.username}</button>
 
                     {/* Sets the value of the style attribute to either "block" or "none" */}
-                    <ul id="menu-items" style={{ display: userDropdown ? "block" : "none" }} className="font-semibold mt-1 absolute bg-stgray-200 border-2 py-2 px-2 border-mint">
+                    <ul id="menu-items" style={{ display: userDropdown ? "block" : "none" }} className="z-20 font-semibold mt-1 absolute bg-stgray-200 border-2 py-2 px-2 border-mint">
                         <Link href="/account-options"><li className="hover:text-mint text-white py-1"><button>Account Options</button></li></Link>
                         <li onClick={() => signOut()} className="hover:text-mint text-white py-1"><button>Log Out</button></li>
                     </ul>

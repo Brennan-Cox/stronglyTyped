@@ -290,75 +290,88 @@ function TutorialsTab(props: any) {
     }
 
     return (
-        <div className="flex justify-between">
-            <div className="py-20  px-5">
-                <table className=" border-l border-r bg-stgray-200">
-                    <thead className="text-mint">
-                        <tr className="border-b border-t border-white text-3xl">
-                            <th className="px-4 py-2">Tutorial</th>
-                            <th className="px-4 py-2">High Score</th>
-                        </tr>
-                    </thead>
-                    <tbody className="text-white text-2xl">
-                        <tr className="border-b border-white px-3">
-                            <td className="py-4 hover:text-mint"><a href="/tutorials/1">Index Fingers</a></td>
-                            <ScoreRow index={0}/>
-                        </tr>
-                        <tr className="border-b border-white px-3">
-                            <td className="py-4 hover:text-mint"><a href="/tutorials/2">Middle Fingers</a></td>
-                            <ScoreRow index={1}/>
-                        </tr>
-                        <tr className="border-b border-white px-3">
-                            <td className="py-4 hover:text-mint"><a href="/tutorials/3">Ring Fingers</a></td>
-                            <ScoreRow index={2}/>
-                        </tr>
-                        <tr className="border-b border-white px-3">
-                            <td className="py-4 hover:text-mint"><a href="/tutorials/4">Pinky Fingers</a></td>
-                            <ScoreRow index={3}/>
-                        </tr>
-                        <tr className="border-b border-white px-3">
-                            <td className="py-4 hover:text-mint"><a href="/tutorials/5">Math Symbols</a></td>
-                            <ScoreRow index={4}/>
-                        </tr>
-                        <tr className="border-b border-white px-3">
-                            <td className="py-4 hover:text-mint"><a href="/tutorials/6">Syntax Symbols</a></td>
-                            <ScoreRow index={5}/>
-                        </tr>
-                        <tr className="border-b border-white px-3">
-                            <td className="py-4 hover:text-mint"><a href="/tutorials/7">Punctuation</a></td>
-                            <ScoreRow index={6}/>
-                        </tr>
-                    </tbody>
-                </table>
+        <div>
+
+            <div className="w-full relative mt-4">
+                    <div className="w-full h-full flex flex-col absolute top-0 left-0 justify-center items-center z-10">
+                        <div className="text-white text-2xl">Select a tutorial from the menu on the left.</div>
+                        <div className="text-white text-2xl">Type the text on the screen as fast and as accurately as you can!</div>
+                        <div className="text-white text-2xl">Correct letters will highlight green, incorrect will highlight red.</div>
+                        <div className="text-white text-2xl">See the image below the tutorial to learn which fingers you should be using!</div>
+                    </div>
+                    <Image src="/message-box.png" alt="" width={870} height={190} />
             </div>
-            <div className="flex justify-center mt-20 bg-mint rounded-3xl w-1/2">
-                <div className="text-lg">
-                    <h2 className="text-3xl font-bold pt-10">{props.test.name}</h2>
-                    <br/>
-                    <div>{displayArr}</div>
-                    <br/>
-                    <textarea onClick={() => setInitialText()} onKeyDown={e => backspace(e.key)} onChange={(e) => inputCharacter(e.target)} className="text-white bg-stgray-200 resize-none rounded-xl w-80 h-7" placeholder="Click here and start typing to begin!"></textarea>
-                    <br/>
-                    <button onClick={() => setInitialText()} className = "text-white bg-stgray-200 rounded-md mt-5 pr-2 pl-2"><a href={"/tutorials/"+props.test.id}>Reset Drill</a></button>
-                    <br/>
-                    <div className = {displayResults ? "block" : "hidden"}>
+
+            <div className="flex justify-between">
+                <div className="py-20  px-5">
+                    <table className=" border-l border-r bg-stgray-200">
+                        <thead className="text-mint">
+                            <tr className="border-b border-t border-white text-3xl">
+                                <th className="px-4 py-2">Tutorial</th>
+                                <th className="px-4 py-2">High Score</th>
+                            </tr>
+                        </thead>
+                        <tbody className="text-white text-2xl">
+                            <tr className="border-b border-white px-3">
+                                <td className="py-4 hover:text-mint"><a href="/tutorials/1">Index Fingers</a></td>
+                                <ScoreRow index={0}/>
+                            </tr>
+                            <tr className="border-b border-white px-3">
+                                <td className="py-4 hover:text-mint"><a href="/tutorials/2">Middle Fingers</a></td>
+                                <ScoreRow index={1}/>
+                            </tr>
+                            <tr className="border-b border-white px-3">
+                                <td className="py-4 hover:text-mint"><a href="/tutorials/3">Ring Fingers</a></td>
+                                <ScoreRow index={2}/>
+                            </tr>
+                            <tr className="border-b border-white px-3">
+                                <td className="py-4 hover:text-mint"><a href="/tutorials/4">Pinky Fingers</a></td>
+                                <ScoreRow index={3}/>
+                            </tr>
+                            <tr className="border-b border-white px-3">
+                                <td className="py-4 hover:text-mint"><a href="/tutorials/5">Math Symbols</a></td>
+                                <ScoreRow index={4}/>
+                            </tr>
+                            <tr className="border-b border-white px-3">
+                                <td className="py-4 hover:text-mint"><a href="/tutorials/6">Syntax Symbols</a></td>
+                                <ScoreRow index={5}/>
+                            </tr>
+                            <tr className="border-b border-white px-3">
+                                <td className="py-4 hover:text-mint"><a href="/tutorials/7">Punctuation</a></td>
+                                <ScoreRow index={6}/>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div className="flex justify-center mt-20 bg-mint rounded-3xl w-1/2">
+                    <div className="text-lg">
+                        <h2 className="text-3xl font-bold pt-10">{props.test.name}</h2>
                         <br/>
-                        <h3 className = "text-xl font-bold">Drill Complete!</h3>
-                        <p>Words Per Minute: {wpm}</p>
-                        <p>Accuracy: {accuracy}%</p>
-                        <h4>Average Performance:</h4>
-                        <p>WPM: {averageWpm} Accuracy: {averageAcc}%</p>
-                    </div>
-                    <div>
-                    <img src="http://i.stack.imgur.com/SBv4T.gif" alt="this slowpoke moves"  width="250" />
-                    </div>
-                    <div className="py-6 px-3">
-                        {keyboardImage()}
+                        <div>{displayArr}</div>
+                        <br/>
+                        <textarea onClick={() => setInitialText()} onKeyDown={e => backspace(e.key)} onChange={(e) => inputCharacter(e.target)} className="text-white bg-stgray-200 resize-none rounded-xl w-80 h-7" placeholder="Click here and start typing to begin!"></textarea>
+                        <br/>
+                        <button onClick={() => setInitialText()} className = "text-white bg-stgray-200 rounded-md mt-5 pr-2 pl-2"><a href={"/tutorials/"+props.test.id}>Reset Drill</a></button>
+                        <br/>
+                        <div className = {displayResults ? "block" : "hidden"}>
+                            <br/>
+                            <h3 className = "text-xl font-bold">Drill Complete!</h3>
+                            <p>Words Per Minute: {wpm}</p>
+                            <p>Accuracy: {accuracy}%</p>
+                            <h4>Average Performance:</h4>
+                            <p>WPM: {averageWpm} Accuracy: {averageAcc}%</p>
+                        </div>
+                        <div>
+                        <img src="http://i.stack.imgur.com/SBv4T.gif" alt="this slowpoke moves"  width="250" />
+                        </div>
+                        <div className="py-6 px-3">
+                            {keyboardImage()}
+                        </div>
                     </div>
                 </div>
+                <div></div>
+                <div></div>
             </div>
-            <div></div>
-            <div></div>
         </div>
     )
 }
