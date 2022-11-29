@@ -479,13 +479,13 @@ function SyntaxTab(props: any) {
         <div>
 
             <div className="w-full relative mt-4">
-                    <div className="w-full h-full flex flex-col absolute top-0 left-0 justify-center items-center z-10">
-                        <div className="text-white text-2xl">Select a mode from the menu on the left.</div>
-                        <div className="text-white text-2xl">Type the text on the screen as fast and as accurately as you can!</div>
-                        <div className="text-white text-2xl">Correct letters will highlight green, incorrect will highlight red.</div>
-                        <div className="text-white text-2xl">You must use the ENTER key to progress to the next line.</div>
-                    </div>
-                    <Image src="/message-box.png" alt="" width={846} height={190} />
+                <div className="w-full h-full flex flex-col absolute top-0 left-0 justify-center items-center z-10">
+                    <div className="text-white text-2xl">Select a mode from the menu on the left.</div>
+                    <div className="text-white text-2xl">Type the text on the screen as fast and as accurately as you can!</div>
+                    <div className="text-white text-2xl">Correct letters will highlight green, incorrect will highlight red.</div>
+                    <div className="text-white text-2xl">You must use the ENTER key to progress to the next line.</div>
+                </div>
+                <Image src="/message-box.png" alt="" width={846} height={190} />
             </div>
 
             <div className="flex justify-between">
