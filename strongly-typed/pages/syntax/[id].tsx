@@ -78,7 +78,7 @@ const SyntaxPage: NextPage = (props: any) => {
                 </div>
             </div>
             <div id="main-tabs" className="bg-stgray-100 h-screen text-center">
-                <SyntaxTab unlocked={props.unlocked} initialText={getInitialLines(props.test.text)} leaderScores={props.leaderScores} userID={props.userID} test={props.test} scores={props.scores} averageScore={props.averageScore}/>
+                <SyntaxTab testID={props.testID} unlocked={props.unlocked} initialText={getInitialLines(props.test.text)} leaderScores={props.leaderScores} userID={props.userID} test={props.test} scores={props.scores} averageScore={props.averageScore}/>
             </div>
         </main>
     )
@@ -151,7 +151,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                     props: {}
                 }
             }
-            return {props: {unlocked: unlocks, user: session.user, test: tests[0], scores: highScores, leaderScores: leaderScores, userID: session.user.id, averageScore: averageScore}};
+            return {props: {unlocked: unlocks, user: session.user, test: tests[0], scores: highScores, leaderScores: leaderScores, userID: session.user.id, averageScore: averageScore, testID: Number(context.query.id)}};
         }
         
 

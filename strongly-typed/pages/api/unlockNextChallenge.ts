@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             // Returns a boolean value if they did beat their previous highscore.
             var { rows } = await client.query('SELECT unlockSyntaxChallenge($1, $2, $3::NUMERIC, $4::NUMERIC)', values);
             var result = rows[0]
-            res.status(200).json({didUnlock: result.unlockSyntaxChallenge})
+            res.status(200).json({didUnlock: result.unlocksyntaxchallenge})
         } catch(e: any) {
             switch (e.code) {
                 default: res.status(400).end()
