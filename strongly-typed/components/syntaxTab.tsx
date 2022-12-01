@@ -33,6 +33,7 @@ function SyntaxTab(props: any) {
     var [averageAcc, SetAvgAccuracy] = useState('')
 
     var [showTutorialRecommendation, SetRecommend] = useState(false)
+    var [showUnlockedChallenge, setUnlockedChallenge] = useState(false)
     var [tutorialTabNumber, SetTutorialTabNum] = useState(1)
 
 
@@ -362,10 +363,10 @@ function SyntaxTab(props: any) {
         if (response.ok) {
             var results = await response.json()
             var didUnlockNext = results.didUnlock
+            console.log(props.testID)
             if (didUnlockNext) {
-                //show next test
+                setUnlockedChallenge(true)
             }
-            // Can display a message to the user saying they beat their highscore
         }
     }
 
@@ -563,6 +564,10 @@ function SyntaxTab(props: any) {
                             <p>Accuracy: {accuracy}%</p>
                             <h4>Average Performance:</h4>
                             <p>WPM: {averageWpm} Accuracy: {averageAcc}%</p>
+                        </div>
+                        <div className={showUnlockedChallenge ? "block" : "hidden"}>
+                            <br />
+                            <button className="text-white bg-stgray-200 rounded-md mt-5 pr-2 pl-2"><a href={"/syntax/" + (props.testID + 1)}>Next Challenge</a></button>
                         </div>
                         <div className={showTutorialRecommendation ? "block" : "hidden"}>
                             <br />
