@@ -475,6 +475,19 @@ function SyntaxTab(props: any) {
         }
     }
 
+    function formatName(name: string): JSX.Element[] {
+        let splitted: string[] = name.split('|')
+        let display: JSX.Element[] = []
+        splitted.forEach((split, index) => {
+            if (index == 0) {
+                display.push(<div>{split}</div>)
+            } else {
+                display.push(<div className="text-lg">{split}</div>)
+            }
+        })
+        return display
+    }
+
     return (
         <div>
 
@@ -535,9 +548,9 @@ function SyntaxTab(props: any) {
                 </div>
                 <div className="flex justify-center mt-20 bg-mint rounded-3xl w-1/2">
                     <div className="text-lg">
-                        <h2 className="text-3xl font-bold pt-10">{props.test.name}</h2>
+                        <h2 className="text-3xl font-bold pt-10">{formatName(props.test.name)}</h2>
                         <br/>
-                        <div className="text-left">{displayArr}</div>
+                        <div className="text-left p-4">{displayArr}</div>
                         <br/>
                         <textarea onClick={() => setInitialText()} onKeyDown={e => backspaceOrEnter(e.key)} onChange={(e) => inputCharacter(e.target)} className="text-white bg-stgray-200 resize-none rounded-xl w-80 h-7" placeholder="Click here and start typing to begin!"></textarea>
                         <br/>
