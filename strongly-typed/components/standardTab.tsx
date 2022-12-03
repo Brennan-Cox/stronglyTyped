@@ -272,17 +272,7 @@ function StandardTab(props: any) {
     return (
         <div>
 
-            {/* Trying to get an image displayed here with text that we can put on top of it. This will serve as the
-             instructions for the confused or overwhelmed user */}
-
-             {/* bg-[url('/message.box.png')] */}
-
             <div className="w-full relative mt-4" >
-                <div className="w-full h-full flex flex-col absolute top-0 left-0 justify-center items-center z-10 px-5">
-                    {/* <div className="text-white text-2xl">Select a mode from the menu on the left.</div>
-                    <div className="text-white text-2xl">Type the text on the screen as fast as you can before time runs out!</div>
-                    <div className="text-white text-2xl">Correct letters will highlight green, incorrect will highlight red.</div> */}
-                </div>
                 <Image src="/message-box-standard.png" alt="" width={846} height={159} />
             </div>
 
