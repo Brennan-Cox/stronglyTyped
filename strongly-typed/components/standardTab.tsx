@@ -275,13 +275,15 @@ function StandardTab(props: any) {
             {/* Trying to get an image displayed here with text that we can put on top of it. This will serve as the
              instructions for the confused or overwhelmed user */}
 
-            <div className="w-full relative mt-4">
-                <div className="w-full h-full flex flex-col absolute top-0 left-0 justify-center items-center z-10">
-                    <div className="text-white text-2xl">Select a mode from the menu on the left.</div>
+             {/* bg-[url('/message.box.png')] */}
+
+            <div className="w-full relative mt-4" >
+                <div className="w-full h-full flex flex-col absolute top-0 left-0 justify-center items-center z-10 px-5">
+                    {/* <div className="text-white text-2xl">Select a mode from the menu on the left.</div>
                     <div className="text-white text-2xl">Type the text on the screen as fast as you can before time runs out!</div>
-                    <div className="text-white text-2xl">Correct letters will highlight green, incorrect will highlight red.</div>
+                    <div className="text-white text-2xl">Correct letters will highlight green, incorrect will highlight red.</div> */}
                 </div>
-                <Image src="/message-box.png" alt="" width={846} height={159} />
+                <Image src="/message-box-standard.png" alt="" width={846} height={159} />
             </div>
 
             <div className="flex justify-between">
@@ -323,12 +325,13 @@ function StandardTab(props: any) {
                         <br />
                         <div>{displayArr}</div>
                         <br />
-                        <textarea onKeyDown={e => callPrev(e.key)} onChange={(e) => callNext(e.target)} className="text-white bg-stgray-200 resize-none rounded-xl w-80 h-7" placeholder="Click here and start typing to begin!"></textarea>
+                        <div className="px-5">
+                            <textarea onKeyDown={e => callPrev(e.key)} onChange={(e) => callNext(e.target)} className="text-white bg-stgray-200 rounded-xl resize-none w-full h-7" placeholder="Click here and start typing to begin!"></textarea>
+                        </div>
                         <br />
                         <button className="text-white bg-stgray-200 rounded-md mt-5 pr-2 pl-2"><a href={"/standard/" + props.test.id}>Reset Test</a></button>
                         <h3 className="text-xl font-bold pt-10">Timer</h3>
                         <div className="text-white text-3xl">{timerDisplay}</div>
-                        <img src="http://i.stack.imgur.com/SBv4T.gif" alt="this slowpoke moves" width="250" />
                         <br />
                         <div className={displayResults ? "block" : "hidden"}>
                             <br />

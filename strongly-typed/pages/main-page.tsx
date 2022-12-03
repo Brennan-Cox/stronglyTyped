@@ -5,6 +5,7 @@ import { getSession } from 'next-auth/react';
 import { Session } from 'next-auth';
 import { signOut } from "next-auth/react";
 import dynamic from 'next/dynamic' 
+
 const StandardTab = dynamic(() => import('../components/standardTab'))
 const SyntaxTab = dynamic(() => import('../components/syntaxTab'))
 const TutorialsTab = dynamic(() => import('../components/tutorialsTab'))
@@ -71,6 +72,7 @@ const Main: NextPage = (props: any) => {
                         <li id="tutorials-tab" onClick={() => toggleActiveTab("tutorial")} className={tutorials ? "active-tab" : "inactive-tab"}><button>Tutorial</button></li>
                     </ul>
                 </div>
+
 
                 {/* Account options dropdown menu */}
                 <div id="account-dropdown" className="py-4 mr-4">
