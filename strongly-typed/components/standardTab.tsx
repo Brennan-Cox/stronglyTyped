@@ -272,17 +272,7 @@ function StandardTab(props: any) {
     return (
         <div>
 
-            {/* Trying to get an image displayed here with text that we can put on top of it. This will serve as the
-             instructions for the confused or overwhelmed user */}
-
-             {/* bg-[url('/message.box.png')] */}
-
             <div className="w-full relative mt-4" >
-                <div className="w-full h-full flex flex-col absolute top-0 left-0 justify-center items-center z-10 px-5">
-                    {/* <div className="text-white text-2xl">Select a mode from the menu on the left.</div>
-                    <div className="text-white text-2xl">Type the text on the screen as fast as you can before time runs out!</div>
-                    <div className="text-white text-2xl">Correct letters will highlight green, incorrect will highlight red.</div> */}
-                </div>
                 <Image src="/message-box-standard.png" alt="" width={846} height={159} />
             </div>
 
@@ -297,23 +287,23 @@ function StandardTab(props: any) {
                         </thead>
                         <tbody className="text-white text-2xl">
                             <tr className="border-b border-white px-3">
-                                <td className="py-4 hover:text-mint"><a href="/standard/1">Standard</a></td>
+                                <td className={props.test.id == 1 ? "underline py-4 text-mint" : "py-4"}><a className="hover:text-mint bg-stgray-100 border-2 border-mint rounded-md px-6 py-2" href="/standard/1">Standard</a></td>
                                 <ScoreRow index={0} />
                             </tr>
                             <tr className="border-b border-white px-3">
-                                <td className="py-4 hover:text-mint"><a href="/standard/2">Difficult</a></td>
+                                <td className={props.test.id == 2 ? "underline py-4 text-mint" : "py-4"}><a className="hover:text-mint bg-stgray-100 border-2 border-mint rounded-md px-6 py-2" href="/standard/2">Difficult</a></td>
                                 <ScoreRow index={1} />
                             </tr>
                             <tr className="border-b border-white px-3">
-                                <td className="py-4 hover:text-mint"><a href="/standard/3">Symbols</a></td>
+                                <td className={props.test.id == 3 ? "underline py-4 text-mint" : "py-4"}><a className="hover:text-mint bg-stgray-100 border-2 border-mint rounded-md px-6 py-2" href="/standard/3">Symbols</a></td>
                                 <ScoreRow index={2} />
                             </tr>
                             <tr className="border-b border-white px-3">
-                                <td className="py-4 hover:text-mint"><a href="/standard/4">Endurance</a></td>
+                                <td className={props.test.id == 4 ? "underline py-4 text-mint" : "py-4"}><a className="hover:text-mint bg-stgray-100 border-2 border-mint rounded-md px-6 py-2"href="/standard/4">Endurance</a></td>
                                 <ScoreRow index={3} />
                             </tr>
                             <tr className="border-b border-white px-3">
-                                <td className="py-4 hover:text-mint"><a href="/standard/5">Hardcore</a></td>
+                                <td className={props.test.id == 5 ? "underline py-4 text-mint" : "py-4"}><a className="hover:text-mint bg-stgray-100 border-2 border-mint rounded-md px-6 py-2"href="/standard/5">Hardcore</a></td>
                                 <ScoreRow index={4} />
                             </tr>
                         </tbody>
