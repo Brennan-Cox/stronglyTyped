@@ -313,31 +313,31 @@ function TutorialsTab(props: any) {
                         </thead>
                         <tbody className="text-white text-2xl">
                             <tr className="border-b border-white px-3">
-                                <td className="py-4 hover:text-mint"><a href="/tutorials/1">Index Fingers</a></td>
+                                <td className={props.test.id == 1 ? "underline py-4 text-mint" : "py-4"}><a className="hover:text-mint bg-stgray-100 border-2 border-mint rounded-md px-6 py-2" href="/tutorials/1">Index Fingers</a></td>
                                 <ScoreRow index={0}/>
                             </tr>
                             <tr className="border-b border-white px-3">
-                                <td className="py-4 hover:text-mint"><a href="/tutorials/2">Middle Fingers</a></td>
+                                <td className={props.test.id == 2 ? "underline py-4 text-mint" : "py-4"}><a className="hover:text-mint bg-stgray-100 border-2 border-mint rounded-md px-6 py-2" href="/tutorials/2">Middle Fingers</a></td>
                                 <ScoreRow index={1}/>
                             </tr>
                             <tr className="border-b border-white px-3">
-                                <td className="py-4 hover:text-mint"><a href="/tutorials/3">Ring Fingers</a></td>
+                                <td className={props.test.id == 3 ? "underline py-4 text-mint" : "py-4"}><a className="hover:text-mint bg-stgray-100 border-2 border-mint rounded-md px-6 py-2" href="/tutorials/3">Ring Fingers</a></td>
                                 <ScoreRow index={2}/>
                             </tr>
                             <tr className="border-b border-white px-3">
-                                <td className="py-4 hover:text-mint"><a href="/tutorials/4">Pinky Fingers</a></td>
+                                <td className={props.test.id == 4 ? "underline py-4 text-mint" : "py-4"}><a className="hover:text-mint bg-stgray-100 border-2 border-mint rounded-md px-6 py-2" href="/tutorials/4">Pinky Fingers</a></td>
                                 <ScoreRow index={3}/>
                             </tr>
                             <tr className="border-b border-white px-3">
-                                <td className="py-4 hover:text-mint"><a href="/tutorials/5">Math Symbols</a></td>
+                                <td className={props.test.id == 5 ? "underline py-4 text-mint" : "py-4"}><a className="hover:text-mint bg-stgray-100 border-2 border-mint rounded-md px-6 py-2" href="/tutorials/5">Math Symbols</a></td>
                                 <ScoreRow index={4}/>
                             </tr>
                             <tr className="border-b border-white px-3">
-                                <td className="py-4 hover:text-mint"><a href="/tutorials/6">Syntax Symbols</a></td>
+                                <td className={props.test.id == 6 ? "underline py-4 text-mint" : "py-4"}><a className="hover:text-mint bg-stgray-100 border-2 border-mint rounded-md px-6 py-2" href="/tutorials/6">Syntax Symbols</a></td>
                                 <ScoreRow index={5}/>
                             </tr>
                             <tr className="border-b border-white px-3">
-                                <td className="py-4 hover:text-mint"><a href="/tutorials/7">Punctuation</a></td>
+                                <td className={props.test.id == 7 ? "underline py-4 text-mint" : "py-4"}><a className="hover:text-mint bg-stgray-100 border-2 border-mint rounded-md px-6 py-2" href="/tutorials/7">Punctuation</a></td>
                                 <ScoreRow index={6}/>
                             </tr>
                         </tbody>

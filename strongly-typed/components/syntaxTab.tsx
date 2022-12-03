@@ -388,9 +388,9 @@ function SyntaxTab(props: any) {
             }
         })
 
-        if (contains) {
+        if (contains) { //props.test.id
             return <tr className="border-b border-white px-3">
-                <td className="py-3 hover:text-mint"><a href={"/syntax/" + (index + 1)}>{challenge}</a></td>
+                <td className={props.test.id - 1 == index ? "underline py-4 text-mint": "py-4"}><a className="hover:text-mint bg-stgray-100 border-2 border-mint rounded-md px-6 py-2" href={"/syntax/" + (index + 1)}>{challenge}</a></td>
                 <td>{props.scores.at(index).high_wpm} WPM / {props.scores.at(index).high_accuracy}% Acc</td>
             </tr>
         } else {
@@ -551,7 +551,7 @@ function SyntaxTab(props: any) {
                     <div className="text-lg">
                         <h2 className="text-3xl font-bold pt-10">{formatName(props.test.name)}</h2>
                         <br/>
-                        <div className="text-left p-4">{displayArr}</div>
+                        <div className="text-left content-center">{displayArr}</div>
                         <br/>
                         <textarea onClick={() => setInitialText()} onKeyDown={e => backspaceOrEnter(e.key)} onChange={(e) => inputCharacter(e.target)} className="text-white bg-stgray-200 resize-none rounded-xl w-80 h-7" placeholder="Click here and start typing to begin!"></textarea>
                         <br/>
@@ -565,8 +565,14 @@ function SyntaxTab(props: any) {
                             <h4>Average Performance:</h4>
                             <p>WPM: {averageWpm} Accuracy: {averageAcc}%</p>
                         </div>
+                        <div className={showUnlockedChallenge ? "hidden" : "block"}>
+                            <br />
+                            <p>{props.test.id != 5 && props.test.id != 10 && props.test.id != 15 ? "Complete the text quickly and accurately enough" : "This is the final level for this lanugage!"}</p>
+                            <p>{props.test.id != 5 && props.test.id != 10 && props.test.id != 15 ? "to unlock the next challenge!" : ""}</p>
+                        </div>
                         <div className={showUnlockedChallenge ? "block" : "hidden"}>
                             <br />
+                            <p>You unlocked the next challenge!!!</p>
                             <button className="text-white bg-stgray-200 rounded-md mt-5 pr-2 pl-2"><a href={"/syntax/" + (props.testID + 1)}>Next Challenge</a></button>
                         </div>
                         <div className={showTutorialRecommendation ? "block" : "hidden"}>
