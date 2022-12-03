@@ -294,12 +294,12 @@ function TutorialsTab(props: any) {
 
             <div className="w-full relative mt-4">
                     <div className="w-full h-full flex flex-col absolute top-0 left-0 justify-center items-center z-10">
-                        <div className="text-white text-2xl">Select a tutorial from the menu on the left.</div>
+                        {/* <div className="text-white text-2xl">Select a tutorial from the menu on the left.</div>
                         <div className="text-white text-2xl">Type the text on the screen as fast and as accurately as you can!</div>
                         <div className="text-white text-2xl">Correct letters will highlight green, incorrect will highlight red.</div>
-                        <div className="text-white text-2xl">See the image below the tutorial to learn which fingers you should be using!</div>
+                        <div className="text-white text-2xl">See the image below the tutorial to learn which fingers you should be using!</div> */}
                     </div>
-                    <Image src="/message-box.png" alt="" width={870} height={190} />
+                    <Image src="/message-box-tutorial.png" alt="" width={870} height={190} />
             </div>
 
             <div className="flex justify-between">
@@ -360,9 +360,6 @@ function TutorialsTab(props: any) {
                             <p>Accuracy: {accuracy}%</p>
                             <h4>Average Performance:</h4>
                             <p>WPM: {averageWpm} Accuracy: {averageAcc}%</p>
-                        </div>
-                        <div>
-                        <img src="http://i.stack.imgur.com/SBv4T.gif" alt="this slowpoke moves"  width="250" />
                         </div>
                         <div className="py-6 px-3">
                             {keyboardImage()}
