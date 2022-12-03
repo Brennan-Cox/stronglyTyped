@@ -7,6 +7,7 @@ import { signOut } from "next-auth/react";
 import config from '../../pg_config';
 import { Client } from 'pg'
 import SyntaxTab from '../../components/syntaxTab'
+import Image from 'next/image';
 
 const SyntaxPage: NextPage = (props: any) => {
 
@@ -68,7 +69,9 @@ const SyntaxPage: NextPage = (props: any) => {
                 {/* Account options dropdown menu */}
                 <div id="account-dropdown" className="py-4 mr-4">
 
-                    <button id="username" onClick={toggle} className="hover:text-mint text-white text-2xl px-12">{props.user.username}</button>
+                    <Image className={userDropdown ? "rotate-90" : ""} src="/username-arrow.png" alt="" width={13} height={15} />
+
+                    <button id="username" onClick={toggle} className="hover:text-mint text-white text-2xl px-3">{props.user.username}</button>
 
                     {/* Sets the value of the style attribute to either "block" or "none" */}
                     <ul id="menu-items" style={{ display: userDropdown ? "block" : "none" }} className="z-20 font-semibold mt-1 absolute bg-stgray-200 border-2 py-2 px-2 border-mint">
