@@ -296,7 +296,8 @@ function TutorialsTab(props: any) {
                     <Image src="/message-box-tutorial.png" alt="" width={870} height={190} />
             </div>
 
-            <div className="flex justify-between">
+            {/* <div className="flex justify-between"> */}
+            <div className="grid grid-cols-3">
                 <div className="py-20  px-5">
                     <table className=" border-l border-r bg-stgray-200">
                         <thead className="text-mint">
@@ -337,7 +338,7 @@ function TutorialsTab(props: any) {
                         </tbody>
                     </table>
                 </div>
-                <div className="flex justify-center mt-20 bg-mint rounded-3xl w-1/2">
+                <div className="flex justify-center mt-20 bg-mint rounded-3xl">
                     <div className="text-lg">
                         <h2 className="text-3xl font-bold pt-10">{props.test.name}</h2>
                         <br/>
@@ -360,8 +361,6 @@ function TutorialsTab(props: any) {
                         </div>
                     </div>
                 </div>
-                <div></div>
-                <div></div>
             </div>
         </div>
     )

@@ -541,7 +541,7 @@ function SyntaxTab(props: any) {
                         </tbody>
                     </table>
                 </div>
-                <div className="flex justify-center mt-20 bg-mint rounded-3xl w-1/2">
+                <div className="flex justify-center mt-20 bg-mint rounded-3xl w-1/2 mb-4">
                     <div className="text-lg">
                         <h2 className="text-3xl font-bold pt-10">{formatName(props.test.name)}</h2>
                         <br/>

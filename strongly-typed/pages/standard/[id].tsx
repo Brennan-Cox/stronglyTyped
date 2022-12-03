@@ -23,17 +23,16 @@ const StandardPage: NextPage = (props: any) => {
     // Anything wrapped in this return statement is HTML
     return (
         <main>
-            <div className="flex bg-stgray-200 justify-between items-end">
+            <div className="grid grid-cols-3 bg-stgray-200 items-end">
                 {/* stronglyTyped in top left */}
-                <div id="logo" className="flex py-4 ml-3">
+                <div id="logo" className="flex py-4 ml-3 place-self-start">
                     <h4 className="login-text text-mint">strongly</h4>
                     <h4 className="login-text text-white ">Typed;</h4>
                 </div>
 
                 {/* Navigation bar options */}
-                <div id="navigation-bar" className="px-4">
+                <div id="navigation-bar" className="px-4 place-self-end">
                     <ul className="flex">
-
                         <Link href="/standard/1"><a id="standard-tab" className="active-tab">Standard</a></Link>
                         <Link href="/syntax/1"><a id="syntax-tab" className="inactive-tab">Syntax</a></Link>
                         <Link href="/tutorials/1"><a id="tutorials-tab" className="inactive-tab">Tutorials</a></Link>
@@ -41,7 +40,7 @@ const StandardPage: NextPage = (props: any) => {
                 </div>
 
                 {/* Account options dropdown menu */}
-                <div id="account-dropdown" className="py-4 mr-4">
+                <div id="account-dropdown" className="py-4 mr-16 place-self-end">
 
                     <Image className={userDropdown ? "rotate-90" : ""} src="/username-arrow.png" alt="" width={13} height={15} />
 
