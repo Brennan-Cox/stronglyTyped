@@ -50,15 +50,15 @@ const SyntaxPage: NextPage = (props: any) => {
     // Anything wrapped in this return statement is HTML
     return (
         <main>
-            <div className="flex bg-stgray-200 justify-between items-end">
+            <div className="grid grid-cols-3 bg-stgray-200 items-end">
                 {/* stronglyTyped in top left */}
-                <div id="logo" className="flex py-4 ml-3">
+                <div id="logo" className="flex py-4 ml-3 place-self-start">
                     <h4 className="login-text text-mint">strongly</h4>
                     <h4 className="login-text text-white ">Typed;</h4>
                 </div>
 
                 {/* Navigation bar options */}
-                <div id="navigation-bar" className="px-4">
+                <div id="navigation-bar" className="px-4 place-self-end">
                     <ul className="flex">
                         <Link href="/standard/1"><a id="standard-tab" className="inactive-tab">Standard</a></Link>
                         <Link href="/syntax/1"><a id="syntax-tab" className="active-tab">Syntax</a></Link>
@@ -67,7 +67,7 @@ const SyntaxPage: NextPage = (props: any) => {
                 </div>
 
                 {/* Account options dropdown menu */}
-                <div id="account-dropdown" className="py-4 mr-4">
+                <div id="account-dropdown" className="py-4 mr-16 place-self-end">
 
                     <Image className={userDropdown ? "rotate-90" : ""} src="/username-arrow.png" alt="" width={13} height={15} />
 
@@ -80,7 +80,7 @@ const SyntaxPage: NextPage = (props: any) => {
                     </ul>
                 </div>
             </div>
-            <div id="main-tabs" className="bg-stgray-100 h-screen text-center">
+            <div id="main-tabs" className="bg-stgray-100 h-screen text-center mb-4">
                 <SyntaxTab testID={props.testID} unlocked={props.unlocked} initialText={getInitialLines(props.test.text)} leaderScores={props.leaderScores} userID={props.userID} test={props.test} scores={props.scores} averageScore={props.averageScore}/>
             </div>
         </main>
