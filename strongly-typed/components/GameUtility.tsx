@@ -326,14 +326,21 @@ export class GameUtility {
     static shuffleText(text: string, n: number): string {
         var splitText = text.split('|')
         var shuffledText: string = ""
-        let currentIndex: number = n
-        let randomIndex: number;
-    
+        let currentIndex: number = splitText.length, randomIndex;
+
         while (currentIndex != 0) {
+
             randomIndex = Math.floor(Math.random() * currentIndex)
-            shuffledText += " " + splitText[randomIndex]
             currentIndex--;
+
+            [splitText[currentIndex], splitText[randomIndex]] = [
+                splitText[randomIndex], splitText[currentIndex]]
         }
+        
+        for (let i = 0; i < n; i++) {
+            shuffledText += splitText[i] + (i < n - 1 ? " " : "")
+        }
+
         return shuffledText
     }
 
