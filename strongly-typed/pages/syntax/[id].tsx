@@ -119,7 +119,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             values = [session.user.id, context.query.id]
             var { rows: averageScore } = await client.query('SELECT * FROM Scores WHERE user_id = $1 and test_id = $2', values)
             values = ['syntax', context.query.id]
-            var { rows: leaderScores } = await client.query('SELECT * FROM Leaderboards l INNER JOIN users u ON l.user_id = u.id WHERE type = $1 and test_id = $2 ORDER BY high_accuracy desc, high_wpm desc limit 15', values)
+            var { rows: leaderScores } = await client.query('SELECT * FROM Leaderboards l INNER JOIN users u ON l.user_id = u.id WHERE type = $1 and test_id = $2 ORDER BY (high_wpm * (high_accuracy / 100)) desc limit 15', values)
             values = [session.user.id]
             var { rows: unlocks } = await client.query('SELECT test_id FROM unlocks WHERE user_id = $1', values)
             await client.end()
