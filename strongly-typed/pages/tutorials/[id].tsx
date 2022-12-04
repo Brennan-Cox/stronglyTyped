@@ -8,7 +8,7 @@ import config from '../../pg_config';
 import { Client } from 'pg'
 import TutorialsTab from '../../components/tutorialsTab'
 import Image from 'next/image';
-
+import { GameUtility } from '../../components/GameUtility';
 const TutorialPage: NextPage = (props: any) => {
 
     /**
@@ -107,6 +107,7 @@ const TutorialPage: NextPage = (props: any) => {
             values = [session.user.id, context.query.id]
             var { rows: averageScore } = await client.query('SELECT * FROM Scores WHERE user_id = $1 and test_id = $2', values)
             await client.end()
+            tests[0].text = GameUtility.shuffleText(tests[0].text, 10)
             return {props: {user: session.user, test: tests[0], scores: highScores, userID: session.user.id, averageScore: averageScore}};
         }
 

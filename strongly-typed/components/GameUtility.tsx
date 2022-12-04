@@ -318,6 +318,26 @@ export class GameUtility {
     }
 
     /**
+     * Shuffles string passed in with bars and returns the first n shuffled words
+     * 
+     * @param text 
+     * @returns 
+     */
+    static shuffleText(text: string, n: number): string {
+        var splitText = text.split('|')
+        var shuffledText: string = ""
+        let currentIndex: number = n
+        let randomIndex: number;
+    
+        while (currentIndex != 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex)
+            shuffledText += " " + splitText[randomIndex]
+            currentIndex--;
+        }
+        return shuffledText
+    }
+
+    /**
      * ********REQUIRES TESTING TO ENSURE RELIABILITY*************
      * Breaks into stringarrayarray or basically a array of chararrays
      * @param string 
