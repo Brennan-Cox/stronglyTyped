@@ -125,7 +125,7 @@ function StandardTab(props: any) {
         let missedChar: string = getMostMissedChar().toUpperCase()
         if (missedChar !== "NONE" && missedChar != " ") {
             let indexFinger: string = "NBHJYUVGFTR"
-            let middleFinger: string = "CDEIKM"
+            let middleFinger: string = "CDEIK"
             let ringFinger: string = "OLWSX"
             let pinkyFinger: string = "QAZ`P:'"
             let mathSymbols: string = "123#4$5%6^78*9(0)-=+/<>"
