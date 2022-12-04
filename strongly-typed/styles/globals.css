@@ -1,3 +1,21 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+.login-text {
+    @apply font-body font-semibold text-3xl;
+}
+
+.active-tab {
+    @apply px-12 py-2 text-xl text-mint bg-stgray-100 border-b-4 border-mint;
+}
+
+.inactive-tab {
+    @apply px-12 py-2 text-xl text-white hover:text-mint active:text-white;
+}
+
+html {
+    background-color: #424242;
+}
