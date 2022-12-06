@@ -561,7 +561,7 @@ function SyntaxTab(props: any) {
                         </div>
                         <div className={showUnlockedChallenge ? "hidden" : "block"}>
                             <br />
-                            <p>{props.test.id != 5 && props.test.id != 10 && props.test.id != 15 ? "Complete the text quickly and accurately enough" : "This is the final level for this lanugage!"}</p>
+                            <p>{props.test.id != 5 && props.test.id != 10 && props.test.id != 15 ? "Complete the text quickly and accurately enough" : "This is the final level for this language!"}</p>
                             <p>{props.test.id != 5 && props.test.id != 10 && props.test.id != 15 ? "to unlock the next challenge!" : ""}</p>
                         </div>
                         <div className={showUnlockedChallenge ? "block" : "hidden"}>
